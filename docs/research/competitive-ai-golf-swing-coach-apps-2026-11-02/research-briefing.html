@@ -1,0 +1,285 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Golf Coach Competitors</title><style>
+:root{--bg:#fbfbf9;--fg:#1d1f21;--mute:#5f6368;--line:#e2e2dc;--card:#fff;--acc:#1f6f5c;--v:#1e7a3c;--vb:#e3f3e8;--m:#7a5a00;--mb:#fbf0d0;--l:#8a3b12;--lb:#fbe3d6;--u:#a1172f;--ub:#fde0e5}
+@media (prefers-color-scheme:dark){:root{--bg:#151718;--fg:#e8e8e3;--mute:#a0a4a8;--line:#2c3033;--card:#1c1f21;--acc:#6cc4a8;--v:#7fd69a;--vb:#16301f;--m:#f0cc6a;--mb:#352b0e;--l:#f4a77e;--lb:#3a2014;--u:#ff8a9c;--ub:#3d1219}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:32px 16px 16px;max-width:980px;margin:auto}header h1{margin:0 0 6px;font-size:1.7rem}.meta{color:var(--mute);font-size:.9rem}
+nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:2;overflow-x:auto;white-space:nowrap;padding:8px 16px}nav a{color:var(--acc);text-decoration:none;margin-right:16px;font-size:.9rem}
+main{max-width:980px;margin:auto;padding:0 16px 64px}h2{margin-top:2.2em;border-bottom:1px solid var(--line);padding-bottom:4px;scroll-margin-top:48px}
+#executive-summary~*:not(h2){}.summary{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:8px;padding:4px 20px 12px;margin-top:16px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--card)}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--bg)}
+a.cite{color:var(--acc);text-decoration:none;font-size:.8em;vertical-align:super}tr:target{outline:2px solid var(--acc)}
+.b{display:inline-block;font-size:.78em;font-weight:600;padding:1px 7px;border-radius:10px;font-style:normal}.v{color:var(--v);background:var(--vb)}.m{color:var(--m);background:var(--mb)}.l{color:var(--l);background:var(--lb)}
+.u,.d{color:var(--u);background:var(--ub);border:1px solid var(--u)}details{margin-top:2em}summary{cursor:pointer;font-weight:600;font-size:1.2rem}td a{color:var(--acc)}
+</style></head><body><header><h1>Competitive research: AI golf swing coach apps</h1>
+<div class="meta">Type: competitive · Decision: PRD differentiation for AIcoach: is the fault-chain / plain-language coaching / honest-confidence gap real, and which features are table stakes vs differentiators<br>Date: 2026-11-02 · Effort: standard preset (3 researchers × 2 rounds, ~8 sources per round) · Validation: normal · Claims (recon_kit tally): 5 verified, 3 <span class="b u">unverified</span>, 1 <span class="b d">disputed</span></div></header>
+<nav><a href="#executive-summary">Executive summary</a><a href="#feature-teardown">Feature teardown</a><a href="#positioning">Positioning</a><a href="#customer-voice">Customer voice</a><a href="#pricing-context-for-the-later-subscription">Pricing (context for the later subscription)</a><a href="#cross-dimension-insights">Cross-dimension insights</a><a href="#contrary-evidence">Contrary evidence</a><a href="#recommendations-for-the-prd">Recommendations (for the PRD)</a><a href="#open-questions">Open questions</a><a href="#staleness-map">Staleness map</a><a href="#sources">Sources</a></nav><main><p><strong>Decision this research serves:</strong> PRD differentiation for AIcoach: is the fault-chain / plain-language coaching / honest-confidence gap real, and which features are table stakes versus differentiators.</p>
+<p><strong>Effort level:</strong> <code>standard</code> preset (the configured default, confirmed by the user). Configured limits: 3 researchers in parallel, about 8 sources per round, at most 2 rounds. Actual use: 5 researcher runs in 2 rounds (3 + 2), plus 1 citation checker, roughly 95 tool calls in total. Validation <code>normal</code> (spot-checking the key claims), red team off. Stopped after round 2 because the round limit was reached.</p>
+<h2 id="executive-summary">Executive summary</h2><div class="summary">
+<p><strong>The gap is real, but it is narrower than the brief assumes. Reframe the differentiation around showing the evidence, not around the words "root cause".</strong></p>
+<ol>
+<li><strong>Saying "we find the root cause" no longer sets you apart.</strong> Performance Golf (about 5K ratings, very active) markets a "Root Swing Flaw … creating a chain reaction of symptoms" and names early extension as a symptom <a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-17">[17]</a>. SwingCoach AI says it "finds the one fault causing the others" <a class="cite" href="#src-15">[15]</a>, and Mustard has a "potential causes" step <a class="cite" href="#src-12">[12]</a>. What none of them shows is the chain itself: each link drawn from the player's own measurements, with evidence. None independently validates its claim either <a class="cite" href="#src-15">[15]</a><a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-17">[17]</a>. AIcoach's fault chain stands out only if it is explicit, built from the player's measurements, and checked against test videos with known answers.</li>
+<li><strong>Two gaps are open, and the brief already plans for both.</strong></li>
+<li><strong>Confidence per metric:</strong> none of the roughly dozen live apps checked shows how confident it is in each measurement <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-12">[12]</a><a class="cite" href="#src-15">[15]</a><a class="cite" href="#src-16">[16]</a>. SwingCoach AI comes closest, and it only refuses to give a number when the angle is poor <a class="cite" href="#src-15">[15]</a>.</li>
+<li><strong>A mobility exercise tied to the detected fault:</strong> no swing-analysis app does this. DeepSwing added generic fitness content in August 2026, but not linked to faults <a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-9">[9]</a>. TPI already publishes the link between mobility limits and faults (for example, a limited deep squat leading to early extension), so the idea is established rather than invented <a class="cite" href="#src-24">[24]</a>. It just isn't built into an app.</li>
+<li><strong>Users' biggest problem is not knowing what to do with the data.</strong> Sportsbox is called "overwhelming" and "not beginner friendly" <a class="cite" href="#src-1">[1]</a>. A Mustard reviewer writes "YOU have to figure out where you are having the issue" <a class="cite" href="#src-11">[11]</a>. What users praise is plain-language explanation of the cause, drills that match the problem, and drawings on key frames <a class="cite" href="#src-11">[11]</a><a class="cite" href="#src-12">[12]</a>. That directly supports AIcoach's plain-language, coach-style output. Caveat: this rests on small samples, most from 2022–2025, and Reddit and Google Play could not be read.</li>
+</ol>
+<p><strong>The biggest caveat:</strong> grounded AI chat is no longer new. SwingCoach AI's Coach tab answers from the user's own analyses <a class="cite" href="#src-15">[15]</a>. Sportsbox, the market leader (3.8K ratings, acquired in April 2026 by a group led by Bryson DeChambeau), shipped a Gemini-based coach called SAMI in September 2026. SAMI still answers preset questions only, but the vendor says "more to come very soon" <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-4">[4]</a>. Your course MVP already leaves free chat out, and this research supports that choice.</p>
+</div><h2 id="feature-teardown">Feature teardown</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Competitor</th>
+<th>Capture</th>
+<th>Explains causes</th>
+<th>Confidence per metric</th>
+<th>Drills / mobility</th>
+<th>AI chat</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sportsbox 3D Golf</strong></td>
+<td>1 phone video turned into a 3D body model, no sensor <a class="cite" href="#src-1">[1]</a></td>
+<td>Diagnose tab and Swing Flaw assessments; no chains between faults found <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-3">[3]</a></td>
+<td>None; no published validation <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-3">[3]</a></td>
+<td>50+ practice drills; no mobility <a class="cite" href="#src-2">[2]</a></td>
+<td>SAMI beta, Gemini, preset questions only <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-4">[4]</a></td>
+<td>Market leader; 4.9★ from 3.8K ratings <a class="cite" href="#src-1">[1]</a></td>
+</tr>
+<tr>
+<td><strong>Performance Golf PG1 / SwingScan</strong></td>
+<td>Phone camera, claims "3D motion-capture", 17 data points <a class="cite" href="#src-16">[16]</a></td>
+<td>Markets a "root swing flaw" and a symptom chain <a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-17">[17]</a></td>
+<td>None <a class="cite" href="#src-17">[17]</a></td>
+<td>100+ programs and drills; no mobility <a class="cite" href="#src-16">[16]</a></td>
+<td>Human instructors ($99 review) <a class="cite" href="#src-16">[16]</a></td>
+<td>Very active; about 5K ratings <a class="cite" href="#src-16">[16]</a></td>
+</tr>
+<tr>
+<td><strong>Mustard</strong></td>
+<td>1 down-the-line video, no clubface <a class="cite" href="#src-11">[11]</a><a class="cite" href="#src-12">[12]</a></td>
+<td>Pre-written "potential causes" for each fault, from named coaches <a class="cite" href="#src-12">[12]</a></td>
+<td>None <a class="cite" href="#src-12">[12]</a></td>
+<td>Drills of 90 seconds or less; no mobility <a class="cite" href="#src-12">[12]</a></td>
+<td>None found <a class="cite" href="#src-11">[11]</a></td>
+<td>Active; 1.2K ratings <a class="cite" href="#src-11">[11]</a></td>
+</tr>
+<tr>
+<td><strong>DeepSwing</strong></td>
+<td>1 video, face-on or down-the-line, 2D, analysed on the phone <a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-9">[9]</a></td>
+<td>Maps ball misses to swing checks; says it can't see the clubface <a class="cite" href="#src-8">[8]</a></td>
+<td>None; speed is "estimated" <a class="cite" href="#src-8">[8]</a></td>
+<td>Drill per check; generic fitness since Aug 2026 <a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-9">[9]</a></td>
+<td>Voice cues, no LLM <a class="cite" href="#src-9">[9]</a></td>
+<td>Active (v3.4, Oct 2026); now leads with a launch monitor <a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-9">[9]</a></td>
+</tr>
+<tr>
+<td><strong>SwingCoach AI</strong></td>
+<td>1 video, face-on or down-the-line <a class="cite" href="#src-15">[15]</a></td>
+<td>"Finds the one fault causing the others" <a class="cite" href="#src-15">[15]</a></td>
+<td>Declines to give a number when the view is poor; no graded confidence <a class="cite" href="#src-15">[15]</a></td>
+<td>One drill per analysis; no mobility <a class="cite" href="#src-15">[15]</a></td>
+<td>Coach tab grounded in the user's own analyses <a class="cite" href="#src-15">[15]</a></td>
+<td>Too few ratings to display <a class="cite" href="#src-15">[15]</a></td>
+</tr>
+<tr>
+<td><strong>HackMotion</strong></td>
+<td>Wrist sensor, not video <a class="cite" href="#src-6">[6]</a></td>
+<td>13 wrist faults mapped to ball flight <a class="cite" href="#src-6">[6]</a></td>
+<td>None <a class="cite" href="#src-6">[6]</a></td>
+<td>Real-time biofeedback drills <a class="cite" href="#src-6">[6]</a></td>
+<td>None <a class="cite" href="#src-6">[6]</a></td>
+<td>No subscription; one-time purchase <a class="cite" href="#src-7">[7]</a></td>
+</tr>
+<tr>
+<td><strong>Caddie AI, Swing IQ, Birdi, 18Birdies</strong></td>
+<td>Phone video <a class="cite" href="#src-18">[18]</a><a class="cite" href="#src-19">[19]</a><a class="cite" href="#src-20">[20]</a><a class="cite" href="#src-21">[21]</a></td>
+<td>No root-cause claim <a class="cite" href="#src-18">[18]</a><a class="cite" href="#src-19">[19]</a><a class="cite" href="#src-20">[20]</a></td>
+<td>None <a class="cite" href="#src-18">[18]</a><a class="cite" href="#src-19">[19]</a><a class="cite" href="#src-20">[20]</a></td>
+<td>Drills <a class="cite" href="#src-18">[18]</a><a class="cite" href="#src-19">[19]</a><a class="cite" href="#src-20">[20]</a></td>
+<td>Caddie AI has free chat over swing history <a class="cite" href="#src-18">[18]</a></td>
+<td>Small or stale <a class="cite" href="#src-18">[18]</a><a class="cite" href="#src-19">[19]</a><a class="cite" href="#src-20">[20]</a><a class="cite" href="#src-21">[21]</a></td>
+</tr>
+<tr>
+<td><strong>Zepp Golf</strong></td>
+<td>Sensor</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>Dead: US listing removed, last update 2019 <a class="cite" href="#src-10">[10]</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>V1 Golf is a manual analysis tool whose chat connects to a human coach, so it is not an AI-coach competitor <a class="cite" href="#src-14">[14]</a>.</p>
+<p><strong>Table stakes (an MVP must have these):</strong> single-phone-video capture, an overall swing score, a drill for each fault, single-video capture and a drill for each fault <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-11">[11]</a><a class="cite" href="#src-15">[15]</a>; history with side-by-side comparison of two swings <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-21">[21]</a>.
+<strong>No longer unique:</strong> root-cause marketing <a class="cite" href="#src-15">[15]</a><a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-17">[17]</a>; AI chat grounded in the user's own swing <a class="cite" href="#src-15">[15]</a>; Caddie AI's chat also draws on swing history <a class="cite" href="#src-18">[18]</a>.
+<strong>Still open:</strong> confidence per metric, a mobility exercise tied to the detected fault, and a fault chain where each step shows its evidence <a class="cite" href="#src-15">[15]</a><a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-17">[17]</a><a class="cite" href="#src-24">[24]</a>.</p>
+<h2 id="positioning">Positioning</h2>
+<ul>
+<li><strong>Sportsbox</strong> leads with "the #1 Swing Analysis Tool on Tour" and serves golfers, coaches and academies <a class="cite" href="#src-3">[3]</a>. DeChambeau calls SAMI "not a replacement for coaches" <a class="cite" href="#src-4">[4]</a>, and wants it to show "the five greatest deviators" in a swing <a class="cite" href="#src-5">[5]</a>. The tour-level 3D promise is gated behind price: the $109.99/yr tier shows six measurements, and the full set costs $399.99/yr <a class="cite" href="#src-2">[2]</a>.</li>
+<li><strong>Performance Golf</strong> sells a promise: "shave 5+ strokes off your handicap in 30 days", with no validation given <a class="cite" href="#src-16">[16]</a>.</li>
+<li><strong>Mustard</strong> sells famous coaches' names (Justin Rose, Golf Digest), but the coaching is pre-written plans <a class="cite" href="#src-12">[12]</a><a class="cite" href="#src-13">[13]</a>.</li>
+<li><strong>DeepSwing</strong> is shifting its focus to a camera-based launch monitor and course GPS <a class="cite" href="#src-8">[8]</a>.</li>
+<li><strong>Nobody positions on honesty about accuracy</strong> (inferred from the positioning reviewed <a class="cite" href="#src-3">[3]</a><a class="cite" href="#src-12">[12]</a><a class="cite" href="#src-16">[16]</a>). That space is free, and it fits the distrust users voice <a class="cite" href="#src-23">[23]</a>.</li>
+</ul>
+<h2 id="customer-voice">Customer voice</h2>
+<ul>
+<li><strong>Interpretation burden.</strong> Users say the data is "overwhelming", "not beginner friendly" and "very technical", and that they need to "know what you're looking for" <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-22">[22]</a>. A reporter testing Sportsbox also describes a learning curve <a class="cite" href="#src-28">[28]</a>. A Mustard reviewer writes "YOU have to figure out where you are having the issue" <a class="cite" href="#src-11">[11]</a>. One Sportsbox reviewer: "data is meaningless unless you understand the cause and effect relationships" <a class="cite" href="#src-1">[1]</a> (2022, stale). <span class="b m">Confidence: medium</span>. It is consistent across several sources, but the samples are small and few are recent.</li>
+<li><strong>What earns praise:</strong> a jargon-free video explaining the problem, a "potential causes" section, drills that match the problem, and key frames with drawings that give "confidence" <a class="cite" href="#src-11">[11]</a><a class="cite" href="#src-12">[12]</a>.</li>
+<li><strong>Distrust tied to camera setup.</strong> Small changes in camera position change the results <a class="cite" href="#src-11">[11]</a>. Users value strict filming guidelines <a class="cite" href="#src-23">[23]</a>.</li>
+<li><strong>Distrust of AI is moderate.</strong> Golfers fear "generic rubbish or wrong answers" and "ingraining the wrong things", and want the AI to agree with their coach <a class="cite" href="#src-23">[23]</a>. Mixed: one Sportsbox user said "some of the tips have actually made my ball striking feel worse" <a class="cite" href="#src-1">[1]</a>.</li>
+<li><strong>Price resentment.</strong> Mustard's roughly $24–30 a month and its paywall before any useful result both draw complaints <a class="cite" href="#src-11">[11]</a><a class="cite" href="#src-29">[29]</a>.</li>
+<li>Nobody asks outright for "why" explanations. That demand is inferred from the complaints and praise above.</li>
+</ul>
+<h2 id="pricing-context-for-the-later-subscription">Pricing (context for the later subscription)</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>App</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sportsbox</td>
+<td>Free (5 swings/month) · $109.99/yr · $399.99/yr (full data) · $799.99/yr (coach) <a class="cite" href="#src-2">[2]</a></td>
+</tr>
+<tr>
+<td>Performance Golf</td>
+<td>$39/mo · $199–299/yr <a class="cite" href="#src-16">[16]</a></td>
+</tr>
+<tr>
+<td>SwingCoach AI</td>
+<td>$39.99/mo · $199.99/yr · 5 analyses for $2.99 <a class="cite" href="#src-15">[15]</a></td>
+</tr>
+<tr>
+<td>Mustard</td>
+<td>$24.99/mo or $149.99/yr (2024); cheaper tiers now also listed <a class="cite" href="#src-11">[11]</a><a class="cite" href="#src-12">[12]</a></td>
+</tr>
+<tr>
+<td>DeepSwing</td>
+<td>Pro $9.99/mo · Complete $14.99/mo or $119.99/yr <a class="cite" href="#src-9">[9]</a></td>
+</tr>
+<tr>
+<td>HackMotion</td>
+<td>One-time purchase, no subscription <a class="cite" href="#src-7">[7]</a>; about $275–915 according to search snippets of the product pages (low-medium confidence, possibly promotional)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Most consumer tiers cost roughly $110–200 a year. The NOK comparison against a single lesson in your brief (600–1200 NOK) fits that range.</p>
+<h2 id="cross-dimension-insights">Cross-dimension insights</h2>
+<ul>
+<li><strong>Accuracy is the trust problem, and nobody is answering it.</strong> Users distrust results that change with camera setup <a class="cite" href="#src-11">[11]</a> and value strict filming guidelines <a class="cite" href="#src-23">[23]</a>. Vendors publish no validation <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-3">[3]</a>. Academic work on markerless pose for golf is still unsettled <a class="cite" href="#src-25">[25]</a>. Confidence per metric plus strict filming guidance therefore answers a real complaint, not just a nice-to-have.</li>
+<li><strong>Mobility tied to a fault is the cause-and-effect idea extended to the body.</strong> TPI already maps body limits to swing faults <a class="cite" href="#src-24">[24]</a>, and the one app reported to find a hip-turn root cause gets praised for it <a class="cite" href="#src-26">[26]</a> (that source is conflicted). The fault chain becomes AIcoach's own when it ends in a body limitation and a mobility exercise, because no app closes that loop <a class="cite" href="#src-8">[8]</a><a class="cite" href="#src-15">[15]</a><a class="cite" href="#src-16">[16]</a>.</li>
+<li><strong>Wrong advice is the main risk of AI coaching.</strong> The fear users name is generic or wrong advice <a class="cite" href="#src-23">[23]</a>, and a harmful tip already appears in reviews <a class="cite" href="#src-1">[1]</a>. Your brief already plans verified rules for three faults plus clearly labelled unverified observations. That is the right response, and no competitor checked makes that distinction visible; the nearest is SwingCoach AI declining to give a number when the view is poor <a class="cite" href="#src-15">[15]</a>.</li>
+</ul>
+<h2 id="contrary-evidence">Contrary evidence</h2>
+<p>The red-team pass was off. The strongest counter-evidence found during verification:
+- <strong>Root cause:</strong> "no app explains causes" is <span class="b d">disputed</span>. Performance Golf, SwingCoach AI and SR.AI all market root-cause or symptom chains <a class="cite" href="#src-15">[15]</a><a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-17">[17]</a><a class="cite" href="#src-27">[27]</a>. The differentiation claim has been narrowed accordingly.
+- <strong>Accuracy:</strong> the reply "within 99% accuracy of AMM", attributed to Sportsbox's developer in one digest, could <strong>not be located</strong> a second time. The quote came from a review reply <a class="cite" href="#src-1">[1]</a>. According to a search snippet (not in the appendix), Sportsbox's chief science officer co-founded AMM, so even if the claim exists it is not independent. <span class="b u">unverified</span>.</p>
+<h2 id="recommendations-for-the-prd">Recommendations (for the PRD)</h2>
+<ol>
+<li><strong>Make "explainable fault chain" a requirement, not "root-cause detection".</strong> Each link names the measurement behind it, the key frame and a confidence level. Recommended in the PRD's differentiation section. <em><span class="b m">Confidence: medium</span>. The absence of competitors doing this is checked across roughly a dozen live apps, but no app was tried hands-on.</em></li>
+<li><strong>Keep a confidence level on every metric as a must-have, and add capture guidance</strong> (camera position, a check on the angle). This answers the setup-distrust complaint. <em><span class="b m">Confidence: medium-high</span>.</em></li>
+<li><strong>End each chain with a mobility exercise tied to the body limitation</strong>, citing TPI-style screening logic as the domain basis. This is the clearest open gap. <em><span class="b m">Confidence: medium</span>, based on absence across roughly a dozen live apps and a TPI source that is a methodology source, not a competitor.</em></li>
+<li><strong>Write the success criteria around plain-language output</strong> (one fault, why, one drill, one exercise), not around how many metrics are shown. That targets the interpretation-burden complaint. <em><span class="b m">Confidence: medium</span>. Small, older samples.</em></li>
+<li><strong>Keep free chat out of the MVP.</strong> Grounded chat exists in small apps and Sportsbox is moving into it <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-15">[15]</a><a class="cite" href="#src-18">[18]</a>, so it is table stakes later, not something that sets AIcoach apart now. <em><span class="b v">Confidence: high</span> for the MVP decision.</em></li>
+<li><strong>Table stakes for the PRD baseline:</strong> single phone video, a drill for each fault, history with comparison of two swings. <em><span class="b v">Confidence: high</span>.</em></li>
+</ol>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>How deep SAMI really goes, and which tier includes it. This needs a hands-on trial or a review; re-check by February 2027.</li>
+<li>Whether Performance Golf's SwingScan really shows chains or only names one root fault. This needs a hands-on trial (paid).</li>
+<li>Recent (≤ 12 months) customer voice from Reddit and Google Play. Both were blocked for these tools; you could run a drafted prompt in your own research tool.</li>
+<li>The Macro Golf Performance app (mobility self-screen plus drills) may already link screening results to faults. Not confirmed.</li>
+</ul>
+<h2 id="staleness-map">Staleness map</h2>
+<p>Re-check dates come from <code>recon_kit.py staleness</code>, using these windows: features 3 months, pricing 3 months, trajectory 6 months, sentiment 12 months.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Class</th>
+<th>Published</th>
+<th>Re-check by</th>
+<th>Stale now?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mustard pricing $24.99/mo (2024 media)</td>
+<td>pricing</td>
+<td>2024-10</td>
+<td>2025-01-01</td>
+<td><span class="b d">stale</span></td>
+</tr>
+<tr>
+<td>Interpretation burden is the main user complaint</td>
+<td>sentiment</td>
+<td>2025-09</td>
+<td>2026-09-01</td>
+<td><span class="b d">stale</span></td>
+</tr>
+<tr>
+<td>Sportsbox acquisition / SAMI on Gemini</td>
+<td>trajectory</td>
+<td>2026-04</td>
+<td>2026-10-01</td>
+<td><span class="b d">stale</span></td>
+</tr>
+<tr>
+<td>Root-cause marketing exists (SwingCoach AI, Performance Golf, Mustard)</td>
+<td>features</td>
+<td>2026-09</td>
+<td>2026-12-01</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Grounded chat exists in small apps</td>
+<td>features</td>
+<td>2026-09</td>
+<td>2026-12-01</td>
+<td>no</td>
+</tr>
+<tr>
+<td>No app shows per-metric confidence</td>
+<td>features</td>
+<td>2026-10</td>
+<td>2027-01-01</td>
+<td>no</td>
+</tr>
+<tr>
+<td>No app ties a mobility exercise to a detected fault</td>
+<td>features</td>
+<td>2026-10</td>
+<td>2027-01-01</td>
+<td>no</td>
+</tr>
+<tr>
+<td>SAMI answers preset questions only</td>
+<td>features</td>
+<td>2026-10</td>
+<td>2027-01-01</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Competitor pricing table</td>
+<td>pricing</td>
+<td>2026-10</td>
+<td>2027-01-01</td>
+<td>no</td>
+</tr>
+<tr>
+<td>AI distrust is moderate; users want the AI to agree with their coach</td>
+<td>sentiment</td>
+<td>2026-03</td>
+<td>2027-03-01</td>
+<td>no</td>
+</tr>
+</tbody>
+</table></div>
+<p>Three claims are already stale: Mustard's current pricing, recent customer sentiment, and SAMI's current state. They are flagged above and do not decide any recommendation on their own. <strong>The earliest live re-check is 2026-12-01</strong>, for the root-cause and grounded-chat claims. That falls right around your MVP deadline, so run a Refresh before the final PRD revision or the course hand-in.</p>
+<details id="sources" open><summary>Source appendix</summary><div class="tw"><table class="sources"><tbody><tr id="src-1"><td>[1]</td><td>Sportsbox features, changelog (SAMI beta, preset questions), reviews</td><td><a href="https://apps.apple.com/us/app/sportsbox-3d-golf/id1578921026" target="_blank" rel="noopener">Apple App Store: Sportsbox 3D Golf</a></td><td>2026-10-26 (v2.54.0)</td><td>2026-11-02</td><td>high (features); medium (reviews)</td></tr><tr id="src-2"><td>[2]</td><td>Sportsbox tiers and prices, measurements per tier</td><td><a href="https://www.sportsbox.ai/pricing" target="_blank" rel="noopener">Sportsbox pricing</a></td><td>2026-10-26</td><td>2026-11-02</td><td>high</td></tr><tr id="src-3"><td>[3]</td><td>Sportsbox positioning; no accuracy answer</td><td><a href="https://www.sportsbox.ai/" target="_blank" rel="noopener">Sportsbox homepage</a></td><td>undated</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-4"><td>[4]</td><td>Acquisition, SAMI, Gemini</td><td><a href="https://www.businesswire.com/news/home/20260407643695/en/" target="_blank" rel="noopener">Business Wire (vendor PR)</a></td><td>2026-04-07</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-5"><td>[5]</td><td>DeChambeau&#x27;s stated aims for SAMI</td><td><a href="https://www.golfmagic.com/news/bryson-dechambeau-google-ai-golf-training-tool" target="_blank" rel="noopener">GolfMagic</a></td><td>2026-04</td><td>2026-11-02</td><td>high</td></tr><tr id="src-6"><td>[6]</td><td>HackMotion sensor, 13 faults, no AI</td><td><a href="https://hackmotion.com/choose-hackmotion/" target="_blank" rel="noopener">HackMotion</a></td><td>undated</td><td>2026-11-02</td><td>high</td></tr><tr id="src-7"><td>[7]</td><td>HackMotion one-time pricing</td><td><a href="https://www.hackmotion.com/pricing/" target="_blank" rel="noopener">HackMotion pricing</a></td><td>undated (©2026)</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-8"><td>[8]</td><td>DeepSwing features, miss mapping, fitness, launch monitor</td><td><a href="https://deepswing.io" target="_blank" rel="noopener">deepswing.io</a></td><td>2026-10-13</td><td>2026-11-02</td><td>high</td></tr><tr id="src-9"><td>[9]</td><td>DeepSwing changelog, pricing, reviews</td><td><a href="https://apps.apple.com/us/app/deepswing/id6751551257" target="_blank" rel="noopener">Apple App Store: DeepSwing</a></td><td>~2026-10-31</td><td>2026-11-02</td><td>high</td></tr><tr id="src-10"><td>[10]</td><td>Zepp Golf dormant</td><td><a href="https://appgoblin.info/apps/738428692" target="_blank" rel="noopener">AppGoblin</a></td><td>undated</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-11"><td>[11]</td><td>Mustard listing and reviews</td><td><a href="https://apps.apple.com/us/app/mustard-golf-swing-analysis/id6499280777" target="_blank" rel="noopener">Apple App Store: Mustard</a></td><td>~2026-10-28</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-12"><td>[12]</td><td>Mustard causes/drills structure, pricing (2024)</td><td><a href="https://pluggedingolf.com/mustard-golf-app-review/" target="_blank" rel="noopener">Plugged In Golf</a></td><td>2024-10-09</td><td>2026-11-02</td><td>medium (stale)</td></tr><tr id="src-13"><td>[13]</td><td>Mustard launch positioning</td><td><a href="https://press.wbd.com/us/media-release/golf-digest-mustard-launch-groundbreaking-ai-powered-platform-mustard-golf-help-every" target="_blank" rel="noopener">Warner Bros. Discovery press</a></td><td>2024</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-14"><td>[14]</td><td>V1 Golf: manual analysis, human chat</td><td><a href="https://apps.apple.com/us/app/id349715369" target="_blank" rel="noopener">Apple App Store: V1 Golf</a></td><td>~2026-09</td><td>2026-11-02</td><td>high</td></tr><tr id="src-15"><td>[15]</td><td>SwingCoach AI root cause, abstaining, Coach tab, pricing</td><td><a href="https://apps.apple.com/us/app/id6760660742" target="_blank" rel="noopener">Apple App Store: SwingCoach AI</a></td><td>2026-09-10</td><td>2026-11-02</td><td>high (claims made); unverified (efficacy)</td></tr><tr id="src-16"><td>[16]</td><td>Performance Golf PG1 features, root-cause claim, pricing</td><td><a href="https://apps.apple.com/us/app/-/id1664475856" target="_blank" rel="noopener">Apple App Store: Performance Golf</a></td><td>~2026-10</td><td>2026-11-02</td><td>high (claims made)</td></tr><tr id="src-17"><td>[17]</td><td>SwingScan &quot;chain reaction of symptoms&quot;</td><td><a href="https://pg1.performancegolf.com/quiz/dqfe-lp-01-never-guess" target="_blank" rel="noopener">Performance Golf SwingScan</a></td><td>2026</td><td>2026-11-02</td><td>medium (marketing)</td></tr><tr id="src-18"><td>[18]</td><td>Caddie AI free chat over swing history</td><td><a href="https://apps.apple.com/app/id6759304353" target="_blank" rel="noopener">Apple App Store: Caddie AI</a></td><td>~2026-07</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-19"><td>[19]</td><td>Swing IQ: LLM via sampled frames, no root cause</td><td><a href="https://apps.apple.com/us/app/id6775244693" target="_blank" rel="noopener">Apple App Store: Swing IQ</a></td><td>~2026-09</td><td>2026-11-02</td><td>high</td></tr><tr id="src-20"><td>[20]</td><td>Birdi: drills, no chat, stale</td><td><a href="https://apps.apple.com/us/app/id6756025251" target="_blank" rel="noopener">Apple App Store: Birdi</a></td><td>~2026-04</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-21"><td>[21]</td><td>18Birdies AI Coach (2020)</td><td><a href="https://18birdies.com/clubhouse/18birdies-ai-coach-how-it-works/" target="_blank" rel="noopener">18Birdies</a></td><td>2020-03-18</td><td>2026-11-02</td><td>low (stale)</td></tr><tr id="src-22"><td>[22]</td><td>&quot;Need to know what you&#x27;re looking for&quot;</td><td><a href="https://forums.golfmonthly.com/threads/sportsbox-ai-has-anyone-tried-it-swing-analysis.119354/" target="_blank" rel="noopener">Golf Monthly forum</a></td><td>2025-10-24</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-23"><td>[23]</td><td>AI distrust, filming guidelines, agreement with coach</td><td><a href="https://forums.golfmonthly.com/threads/building-a-swing-analysis-tool-would-love-honest-feedback-from-golfers-coaches.119755/latest" target="_blank" rel="noopener">Golf Monthly forum</a></td><td>2026-03</td><td>2026-11-02</td><td>medium</td></tr><tr id="src-24"><td>[24]</td><td>Mobility limits linked to early extension</td><td><a href="https://cdn.site.mytpi.com/improve-my-game/swing-characteristics/early-extension" target="_blank" rel="noopener">TPI</a></td><td>undated</td><td>2026-11-02</td><td>medium (snippet)</td></tr><tr id="src-25"><td>[25]</td><td>Markerless golf accuracy unsettled</td><td><a href="https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2023.1272038/epub" target="_blank" rel="noopener">Frontiers in Sports and Active Living</a></td><td>2023</td><td>2026-11-02</td><td>medium (snippet)</td></tr><tr id="src-26"><td>[26]</td><td>Mustard found hip-turn root cause (investor-conflicted)</td><td><a href="https://www.golfdigest.com/story/what-an-average-golfer-learned-about-his-swing-new-technology-mustard" target="_blank" rel="noopener">Golf Digest</a></td><td>~2024</td><td>2026-11-02</td><td>low (snippet, conflicted)</td></tr><tr id="src-27"><td>[27]</td><td>SR.AI root-cause claim</td><td><a href="https://apps.apple.com/app/id6741165328" target="_blank" rel="noopener">Apple App Store: SR.AI</a></td><td>2026</td><td>2026-11-02</td><td>low (snippet)</td></tr><tr id="src-28"><td>[28]</td><td>Sportsbox learning curve (reporter)</td><td><a href="https://www.geekwire.com/2024/this-startup-helped-bryson-dechambeau-win-the-u-s-open-now-it-wants-to-improve-your-golf-swing/" target="_blank" rel="noopener">GeekWire</a></td><td>2024</td><td>2026-11-02</td><td>medium (snippet, stale)</td></tr><tr id="src-29"><td>[29]</td><td>Mustard price complaints (aggregated reviews)</td><td><a href="https://justuseapp.com/en/app/6499280777/mustard-golf-swing-analysis/reviews" target="_blank" rel="noopener">JustUseApp</a></td><td>undated</td><td>2026-11-02</td><td>low</td></tr></tbody></table></div></details></main></body></html>
