@@ -15,6 +15,7 @@ Revidere `docs/product-brief/brief.md` etter faglærers tilbakemelding (2026-10-
 - `.memlog.md` oppdatert med beslutningene.
 - Endringene i `brief.md` og `.memlog.md` er committet i `b6e1641`.
 - Oppfølging: brukeren bekreftet de tre feilene, men appen skal kjenne igjen feilen spilleren faktisk har. Briefen skiller nå mellom tre verifiserte feil (regler, feilkjede, drill, tester) og en åpen KI-observasjon for andre feil, merket uverifisert og uten foreskrevet drill. Nytt suksesskriterium «No forced fit»; sammenligning flyttet til stretch-kriterium (8 kriterier). Golfbakgrunn (fem år på høyt nivå, turneringer med sterke felt) lagt inn under kvalitetssikring. Committet i `d74bda7`.
+- Pushet til `origin/main` (`777c7d4..5d2cbb2`).
 
 ### Åpne punkter
 - Velg input og modell for den åpne KI-observasjonen (nøkkelbilder til visjonsmodell, kun målinger, eller begge) og kostnad per analyse — avgjøres i arkitekturen.
