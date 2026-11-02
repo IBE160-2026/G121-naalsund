@@ -15,7 +15,7 @@ Run BMad Deep Recon (competitive) to check whether AIcoach's planned differentia
 - Process memory: `docs/research/competitive-ai-golf-swing-coach-apps-2026-11-02/.memlog.md`
 
 ### Result
-- `docs/research/competitive-ai-golf-swing-coach-apps-2026-11-02/`, not committed:
+- `docs/research/competitive-ai-golf-swing-coach-apps-2026-11-02/`, committed in `e1c4fca` and pushed to `origin/main`:
   - `research.md` (status complete, 29 sources)
   - `research-briefing.html`
   - `digests/` (5 researcher digests)
@@ -29,6 +29,7 @@ Run BMad Deep Recon (competitive) to check whether AIcoach's planned differentia
   - Biggest user complaint: "I don't know what to do with the data". Small, older samples.
 - Semantic citation check: 9 minor mismatches and 4 uncited sentences, all fixed. The core claims hold.
 - Claims tally (`recon_kit`, 9 claims): 5 verified, 3 unverified, 1 disputed.
+- At the user's request, the effort level (`standard`: 3 researchers × 2 rounds, ~8 sources per round, ~95 tool calls) is now shown in `research.md` and the briefing header.
 
 ### Open items
 - Use the findings in the PRD: frame the differentiation as an "explainable fault chain + confidence per metric + mobility tied to the fault", not as "root-cause detection".
