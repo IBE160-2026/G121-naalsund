@@ -29,7 +29,7 @@ Run BMad Deep Recon (competitive) to check whether AIcoach's planned differentia
   - Biggest user complaint: "I don't know what to do with the data". Small, older samples.
 - Semantic citation check: 9 minor mismatches and 4 uncited sentences, all fixed. The core claims hold.
 - Claims tally (`recon_kit`, 9 claims): 5 verified, 3 unverified, 1 disputed.
-- At the user's request, the effort level (`standard`: 3 researchers × 2 rounds, ~8 sources per round, ~95 tool calls) is now shown in `research.md` and the briefing header.
+- The effort level was briefly added to `research.md` and the briefing, then removed again at the user's request: it doesn't belong in the research document.
 
 ### Open items
 - Use the findings in the PRD: frame the differentiation as an "explainable fault chain + confidence per metric + mobility tied to the fault", not as "root-cause detection".
