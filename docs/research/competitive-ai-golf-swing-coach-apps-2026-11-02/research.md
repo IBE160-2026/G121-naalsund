@@ -18,8 +18,6 @@ claims_disputed: 1  # recon_kit tally over 9 ref-level claims (12 ledger lines; 
 
 **Decision this research serves:** PRD differentiation for AIcoach: is the fault-chain / plain-language coaching / honest-confidence gap real, and which features are table stakes versus differentiators.
 
-**Effort level:** `standard` preset (the configured default, confirmed by the user). Configured limits: 3 researchers in parallel, about 8 sources per round, at most 2 rounds. Actual use: 5 researcher runs in 2 rounds (3 + 2), plus 1 citation checker, roughly 95 tool calls in total. Validation `normal` (spot-checking the key claims), red team off. Stopped after round 2 because the round limit was reached.
-
 ## Executive summary
 
 **The gap is real, but it is narrower than the brief assumes. Reframe the differentiation around showing the evidence, not around the words "root cause".**
