@@ -6,12 +6,17 @@
 - [x] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — skriv egen golfbakgrunn i briefen (løst 2026-11-02)
 - [ ] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — legg opplastingsmappe for videoer i .gitignore når stack er valgt
 - [ ] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — velg input/modell og kostnad for åpen KI-observasjon (arkitektur)
-- [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — use the findings in the PRD: explainable fault chain + confidence per metric + mobility tied to the fault (not "root-cause detection")
+- [x] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — use the findings in the PRD: explainable fault chain + confidence per metric + mobility tied to the fault (not "root-cause detection") (løst 2026-11-03, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — refresh the competitive research before the final PRD/hand-in (earliest re-check 2026-12-01)
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — get recent customer voice (Reddit/Google Play), e.g. with a Deep Recon draft prompt
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — apply bmad-review (structure, prose) to research.md
 - [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — uke 1-spike: benchmark MediaPipe Full/Heavy mot RTMPose-m på egen laptop og egne DTL-klipp (hastighet + stabilitet)
 - [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — merk svingfaser (adresse/topp/treff) i testvideoene for å måle nøyaktigheten til håndleddsheuristikken
-- [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — avgjør i PRD hvordan over the top håndteres (håndbane-proxy med maks middels konfidens, køllelinje som stretch, eller bytt til sway)
+- [x] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — avgjør i PRD hvordan over the top håndteres (håndbane-proxy med maks middels konfidens, køllelinje som stretch, eller bytt til sway) (løst 2026-11-03, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — film testvideoene i 120/240 fps, god belysning, kamera i håndhøyde på hand line
-- [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — ikke siter «70 % av amatører early-extender» i PRD (ingen primærkilde)
+- [x] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — ikke siter «70 % av amatører early-extender» i PRD (ingen primærkilde) (løst 2026-11-03, se [prd](995-2026-11-03-17-24-03-prd.md))
+- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — confirm the 9 [ASSUMPTION] tags and 6 open questions in docs/prd/prd.md (§11–12)
+- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — decide over the top vs sway by 2026-12-08 based on the evaluation set
+- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — film and label separate tuning and evaluation sets (eval: ≥4 per fault, ≥3 clean, ≥3 outside the three faults)
+- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-ux, incl. sketches of the filming guide and result screen (teacher feedback)
+- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-architecture (pose model, storage, LLM input, swing library storage limit)
