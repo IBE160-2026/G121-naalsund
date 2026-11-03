@@ -10,3 +10,8 @@
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — refresh the competitive research before the final PRD/hand-in (earliest re-check 2026-12-01)
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — get recent customer voice (Reddit/Google Play), e.g. with a Deep Recon draft prompt
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — apply bmad-review (structure, prose) to research.md
+- [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — uke 1-spike: benchmark MediaPipe Full/Heavy mot RTMPose-m på egen laptop og egne DTL-klipp (hastighet + stabilitet)
+- [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — merk svingfaser (adresse/topp/treff) i testvideoene for å måle nøyaktigheten til håndleddsheuristikken
+- [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — avgjør i PRD hvordan over the top håndteres (håndbane-proxy med maks middels konfidens, køllelinje som stretch, eller bytt til sway)
+- [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — film testvideoene i 120/240 fps, god belysning, kamera i håndhøyde på hand line
+- [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — ikke siter «70 % av amatører early-extender» i PRD (ingen primærkilde)
