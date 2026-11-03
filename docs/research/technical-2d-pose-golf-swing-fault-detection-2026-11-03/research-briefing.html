@@ -1,0 +1,275 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2D Pose Feasibility</title><style>
+:root{--bg:#fbfbf9;--fg:#1d1f21;--mute:#5f6368;--line:#e2e2dc;--card:#fff;--acc:#1f6f5c;--v:#1e7a3c;--vb:#e3f3e8;--m:#7a5a00;--mb:#fbf0d0;--l:#8a3b12;--lb:#fbe3d6;--u:#a1172f;--ub:#fde0e5}
+@media (prefers-color-scheme:dark){:root{--bg:#151718;--fg:#e8e8e3;--mute:#a0a4a8;--line:#2c3033;--card:#1c1f21;--acc:#6cc4a8;--v:#7fd69a;--vb:#16301f;--m:#f0cc6a;--mb:#352b0e;--l:#f4a77e;--lb:#3a2014;--u:#ff8a9c;--ub:#3d1219}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:32px 16px 16px;max-width:980px;margin:auto}header h1{margin:0 0 6px;font-size:1.7rem}.meta{color:var(--mute);font-size:.9rem}
+nav{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:2;overflow-x:auto;white-space:nowrap;padding:8px 16px}nav a{color:var(--acc);text-decoration:none;margin-right:16px;font-size:.9rem}
+main{max-width:980px;margin:auto;padding:0 16px 64px}h2{margin-top:2.2em;border-bottom:1px solid var(--line);padding-bottom:4px;scroll-margin-top:48px}
+#executive-summary~*:not(h2){}.summary{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:8px;padding:4px 20px 12px;margin-top:16px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--card)}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--bg)}
+a.cite{color:var(--acc);text-decoration:none;font-size:.8em;vertical-align:super}tr:target{outline:2px solid var(--acc)}
+.b{display:inline-block;font-size:.78em;font-weight:600;padding:1px 7px;border-radius:10px;font-style:normal}.v{color:var(--v);background:var(--vb)}.m{color:var(--m);background:var(--mb)}.l{color:var(--l);background:var(--lb)}
+.u,.d{color:var(--u);background:var(--ub);border:1px solid var(--u)}details{margin-top:2em}summary{cursor:pointer;font-weight:600;font-size:1.2rem}td a{color:var(--acc)}
+</style></head><body><header><h1>Technical research: 2D pose golf swing fault detection</h1>
+<div class="meta">Type: technical · Date: 2026-11-03 · Preset: standard (2 rounds) · Validation: normal · Claims: 5 verified, 7 unverified</div></header>
+<nav><a href="#executive-summary">Executive summary</a><a href="#d1-pose-models-and-how-competitors-do-it">D1: Pose models and how competitors do it</a><a href="#d2-capture-and-normalization">D2: Capture and normalization</a><a href="#d3-swing-phases-events">D3: Swing phases (events)</a><a href="#d4-fault-definitions-and-starting-thresholds">D4: Fault definitions and starting thresholds</a><a href="#cross-dimension-insights">Cross-dimension insights</a><a href="#recommendations-for-the-prd">Recommendations (for the PRD)</a><a href="#open-questions">Open questions</a><a href="#staleness-map">Staleness map</a><a href="#sources">Sources</a></nav><main><p><strong>Decision this research serves:</strong> what the AIcoach PRD can promise on thresholds, confidence rules and speed for detecting early extension, loss of posture and over the top from one down-the-line (DTL) phone video with local 2D pose.</p>
+<p><strong>Effort level:</strong> <code>standard</code> preset (3 researchers in round 1, 2 in round 2, about 8 sources per researcher per round, 2 rounds), validation <code>normal</code>, red team off. The lead added an inline competitor lookup of 8 tool calls, because the round-2 researcher ran out of budget on this user-requested question. Both dimension sets stopped at the round cap; the open questions are listed below.</p>
+<h2 id="executive-summary">Executive summary</h2><div class="summary">
+<p><strong>The plan is feasible, but the PRD should promise a tunable, testable rule system, not literature-backed thresholds, calibrated confidence or a guaranteed speed.</strong></p>
+<ol>
+<li><strong>Starting thresholds exist, but come from one patent, not from research.</strong>
+   - TPI defines all three faults clearly from the DTL view, but publishes no numbers <a class="cite" href="#src-31">[31]</a><a class="cite" href="#src-33">[33]</a><a class="cite" href="#src-34">[34]</a>.
+   - The only numeric thresholds found are in an Acushnet (Titleist parent) patent granted in April 2026 <a class="cite" href="#src-35">[35]</a>:<ul>
+<li><strong>Early extension:</strong> hips more than about 6 in past a vertical line at the rearmost hip; 3–6 in is "potential".</li>
+<li><strong>Loss of posture:</strong> more than 10° change in the address angles; 5–10° is "potential".</li>
+<li><strong>Over the top:</strong> club more than about 3 in in front of and above the impact-plane line.</li>
+<li>The patent says these values "may vary" by up to 3 in or 30°, so they are starting values to tune on the test videos, not norms.</li>
+<li>Its two-level structure (fault and "potential") fits the brief's confidence idea well.</li>
+</ul>
+</li>
+<li><strong>Confidence must be built, not read off the model.</strong>
+   - All three pose models output per-keypoint scores, MediaPipe as visibility/presence <a class="cite" href="#src-3">[3]</a><a class="cite" href="#src-4">[4]</a>, RTMPose as SimCC scores <a class="cite" href="#src-1">[1]</a> and YOLO as keypoint confidence <a class="cite" href="#src-2">[2]</a>. None is documented as calibrated.
+   - An ICML 2024 paper finds that such scores are generally poorly calibrated <a class="cite" href="#src-6">[6]</a>.
+   - Markerless 2D pose has about 9–10° mean joint-angle error in sports movements <a class="cite" href="#src-37">[37]</a>. That is about the same size as the 10° loss-of-posture threshold.
+   - The PRD should define confidence as a composite: landmark visibility in the relevant frames, the margin from the threshold, and the certainty of event detection. It should then show it in bands that are checked against the test set.</li>
+<li><strong>Speed is plausible, but nobody has measured it on a laptop.</strong>
+   - Published CPU figures each come from a single, vendor-affiliated source:<ul>
+<li>RTMPose-m with detector: about 26.6 ms per frame on a desktop i7 <a class="cite" href="#src-1">[1]</a>. The paper's other CPU figures are single-threaded, but it does not say whether this one is.</li>
+<li>YOLO26n-pose: about 40 ms per frame on an unnamed CPU <a class="cite" href="#src-2">[2]</a>.</li>
+<li>MediaPipe: only 2021 phone figures, with Full at about 18 fps on a Pixel 3 CPU <a class="cite" href="#src-4">[4]</a>.</li>
+<li>A 240 fps clip of 10 s is 2,400 frames, which puts the 2-minute target at the limit. Trimming to the swing and subsampling make it comfortable.</li>
+<li>The PRD should state speed as an acceptance test measured on the target laptop.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Biggest caveat:</strong> over the top is hard to detect from pose alone. Both the TPI slot test <a class="cite" href="#src-34">[34]</a> and the patent rule <a class="cite" href="#src-35">[35]</a> use the club shaft, and the generic pose models do not track the club. Without a club detector, over the top can only be estimated from the hand path, with lower confidence.</p>
+</div><h2 id="d1-pose-models-and-how-competitors-do-it">D1: Pose models and how competitors do it</h2>
+<p><strong>Candidates.</strong>
+- <strong>MediaPipe Pose Landmarker</strong> (lite / full / heavy): 33 landmarks, each with visibility and presence, and a VIDEO mode that tracks between frames <a class="cite" href="#src-3">[3]</a><a class="cite" href="#src-4">[4]</a>. The 2021 browser benchmarks (81 fps for Full) used GPU help, so they say little about CPU speed <a class="cite" href="#src-5">[5]</a>.
+  - Its model card reports accuracy only on fitness-style smartphone photos (PDJ 87–94%). It warns of more "jittering" under motion and poor light <a class="cite" href="#src-4">[4]</a>.
+- <strong>RTMPose</strong> (via rtmlib or MMPose): the best published CPU speed/accuracy trade-off. RTMPose-m reaches 75.8% COCO AP at "90+ FPS" on an i7-11700 for the pose model alone, and 26.6 ms per frame with the RTMDet detector <a class="cite" href="#src-1">[1]</a>.
+  - rtmlib also offers Body26 (with feet) and whole-body models <a class="cite" href="#src-13">[13]</a>.
+- <strong>YOLO-pose (Ultralytics):</strong> easy to use, but the nano model is the only size that is fast enough on CPU (40 ms per frame; m size 218 ms) <a class="cite" href="#src-2">[2]</a>. It is licensed AGPL-3.0, which requires releasing the source or buying a license <a class="cite" href="#src-12">[12]</a>.
+- <strong>Licenses:</strong> MediaPipe, MMPose and rtmlib are Apache-2.0 <a class="cite" href="#src-13">[13]</a><a class="cite" href="#src-14">[14]</a><a class="cite" href="#src-15">[15]</a>.</p>
+<p><strong>Quality on golf.</strong>
+- No head-to-head comparison on golf or fast sports video was found. This is an evidence gap, not a tie.
+- The best signal is Swing Catalyst, a commercial golf product that uses RTMPose (title of <a class="cite" href="#src-8">[8]</a>). It discloses that its general-purpose model "has undergone minimal quantitative testing". It also says fast golf poses and occluded points cause errors, that blurry or low-resolution video "significantly" reduces accuracy, and that it supports only face-on and DTL views <a class="cite" href="#src-7">[7]</a>. Confidence: <i class="b v">high</i> that the vendor says this.
+- Monocular 3D models were found "too erroneous" for golf kinematics against marker-based mocap (DTU 2023) <a class="cite" href="#src-10">[10]</a>. That supports the brief's choice of 2D. Confidence: <i class="b m">medium</i> (abstract only).
+- A golf patent notes that motion blur and the club head leaving the frame "greatly hinder" club keypoints <a class="cite" href="#src-40">[40]</a>. Club tracking is a separate, harder problem.</p>
+<p><strong>How competitors do it.</strong>
+- None of the apps checked discloses its pose model or publishes DTL validation.
+- <strong>Sportsbox AI</strong> publishes its own unreviewed validation against AMM3D: about 2° mean difference on body angles, 30 golfers, face-on only, high-speed shutter <a class="cite" href="#src-9">[9]</a>. Confidence: <i class="b m">medium</i> (vendor self-validation).
+- <strong>Swing Catalyst:</strong> 2D only, RTMPose, honest about limitations <a class="cite" href="#src-7">[7]</a><a class="cite" href="#src-8">[8]</a>.
+- <strong>SwingNote:</strong> the user picks the angle (face-on or DTL), pose runs on the device, and "only numeric metrics are sent to the server" <a class="cite" href="#src-17">[17]</a>. Confidence: <i class="b m">medium</i> (developer listing).
+- <strong>DeepSwing:</strong> says it runs on-device and detects early extension and sway, with no model or validation disclosed <a class="cite" href="#src-11">[11]</a>. Confidence: <i class="b l">low</i>.
+- <strong>Mustard:</strong> a "patented computer vision and AI system" trained on 3D scans; no validation found <a class="cite" href="#src-18">[18]</a>. Confidence: <i class="b l">low</i>.
+- <strong>Performance Golf SwingScan and CoachNow/OnForm:</strong> no technical disclosure. CoachNow says its tracking is "NOT a silver bullet" <a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-19">[19]</a>.
+- <strong>Litslink:</strong> a development vendor's case study says off-the-shelf pose models were "not reliable enough for outdoor golf footage" <a class="cite" href="#src-20">[20]</a>. Confidence: <i class="b l">low</i> (snippet).</p>
+<p><strong>Confidence scores.</strong>
+- MediaPipe visibility is defined as the probability that a point is in frame and not occluded; presence is the probability it is in frame <a class="cite" href="#src-4">[4]</a>.
+- RTMPose SimCC scores and YOLO keypoint confidence come with no calibration claim <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-2">[2]</a>.
+- Keypoint confidences in standard 2D pose frameworks are poorly calibrated against actual accuracy <a class="cite" href="#src-6">[6]</a>. Confidence: <i class="b m">medium</i> (abstract level).
+- Practitioners smooth landmarks and interpolate short gaps. One community guide suggests a 6–10 Hz Butterworth filter <a class="cite" href="#src-39">[39]</a>. Yamamoto et al. use 6 Hz on DTL wrist data <a class="cite" href="#src-30">[30]</a>.</p>
+<h2 id="d2-capture-and-normalization">D2: Capture and normalization</h2>
+<p><strong>Frame rate.</strong>
+- The downswing lasts about 0.21–0.26 s in classic studies <a class="cite" href="#src-29">[29]</a>. TPI's tour data gives a backswing:downswing ratio of about 3.2:1 and a 3D downswing range of 233–296 ms <a class="cite" href="#src-24">[24]</a>.
+- At 30 fps that is only about 7–9 frames for the whole downswing. The clubhead moves about 1.5 m between frames at 100 mph <a class="cite" href="#src-24">[24]</a>.
+- TPI recommends at least 120 fps (240 as an option for finer timing) and a shutter of 1/1000 s or faster <a class="cite" href="#src-24">[24]</a>. V1 Sports suggests 240 fps on iPhone <a class="cite" href="#src-26">[26]</a>. A forum reports that V1 recommends 1/2000 s <a class="cite" href="#src-25">[25]</a>.
+- Blur depends on exposure time, not frame rate <a class="cite" href="#src-25">[25]</a>. Phones in slow-motion mode usually shorten exposure, but auto exposure is not under the user's control.
+- Verification: the fps recommendation has only vendor or forum backing (no standards body); the downswing duration is verified across sources.
+- Research capture uses 240 Hz from DTL as well (Yamamoto et al., 3.5 m behind the ball) <a class="cite" href="#src-30">[30]</a>.</p>
+<p><strong>Filming guide.</strong> Guides agree on putting the camera at hand height at address, level, on or parallel to the hand line or target line, 8–12 ft away, on a tripod or stable surface <a class="cite" href="#src-26">[26]</a><a class="cite" href="#src-27">[27]</a>.</p>
+<p><strong>Normalization.</strong>
+- CaddieSet scales joint coordinates by the person's bounding-box width and expresses position metrics as ratios relative to address <a class="cite" href="#src-23">[23]</a>.
+- A 2025 MDPI paper reportedly normalizes by shoulder width <a class="cite" href="#src-38">[38]</a>. Confidence: <i class="b l">low</i> (snippet only).
+- Angles are scale-invariant, so the loss-of-posture rule (degrees) transfers to 2D directly. Distances in inches, as used for early extension and over the top, need converting to a body-relative unit.
+- Validity: the only 2D-vs-3D golf study found validated swing time and club angle from manual digitizing (face-on, 240 Hz), not body angles from pose estimation <a class="cite" href="#src-28">[28]</a>.
+- No study puts a number on the error from a camera placed off the hand line. Guides only say qualitatively that it distorts plane lines.</p>
+<h2 id="d3-swing-phases-events">D3: Swing phases (events)</h2>
+<p><strong>SwingNet / GolfDB</strong> <a class="cite" href="#src-21">[21]</a><a class="cite" href="#src-22">[22]</a>:
+- 1,400 YouTube videos at 30 fps, 8 events, about 10.6 ms per frame on CPU.
+- 76.1% of events are found within ±1 frame (91.8% excluding address and finish). Impact and mid-downswing are about 98%, top 83.9%, address 31.7% and finish 26.5%.
+- Verification: CaddieSet independently reproduces the 76.1% / 91.8% baseline, and gets 78.0% / 94.1% after fine-tuning <a class="cite" href="#src-23">[23]</a>. The per-event figures are single-source.
+- Limits:
+  - The code is CC BY-NC 4.0 (acceptable for the course, not for a paid launch).
+  - The released weights reach 71.5%.
+  - The demo needs a video already cropped and trimmed to one swing.
+  - Accuracy per view (DTL vs face-on) is not reported <a class="cite" href="#src-22">[22]</a>.</p>
+<p><strong>Wrist heuristic</strong> (Yamamoto et al. 2023, DTL at 240 Hz) <a class="cite" href="#src-30">[30]</a>:
+- <strong>Address:</strong> the first frame where wrist speed exceeds a threshold, minus 0.125 s.
+- <strong>Top:</strong> the wrist's highest point.
+- <strong>Impact:</strong> the wrist's lowest point after the top.
+- <strong>Finish:</strong> the wrist's highest point after impact.
+- A 6 Hz Butterworth filter is applied first.
+- This fits the MVP well (same view, no extra model, transparent), but <strong>no accuracy figure is published</strong>. Confidence: <i class="b v">high</i> that the method exists, unknown how accurate it is.</p>
+<p><strong>Patent event model:</strong> the Acushnet patent uses P1–P10. Top is found by the transition into the downswing, and impact by a return to an address-like pose <a class="cite" href="#src-35">[35]</a>.</p>
+<p><strong>Audio:</strong> patents use the impact sound to locate impact, but note it is unreliable in noise. No accuracy figures were found <a class="cite" href="#src-41">[41]</a>.</p>
+<h2 id="d4-fault-definitions-and-starting-thresholds">D4: Fault definitions and starting thresholds</h2>
+<table>
+<thead>
+<tr>
+<th>Fault</th>
+<th>TPI definition (DTL)</th>
+<th>Numeric starting value</th>
+<th>2D implementation note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Early extension</td>
+<td>"Any forward movement (thrust) of the lower body towards the golf ball during the downswing". DTL check: a vertical line behind the tailbone at address <a class="cite" href="#src-31">[31]</a><a class="cite" href="#src-32">[32]</a></td>
+<td>Hips more than about 6 in past a vertical line through the rearmost hip point = fault; 3–6 in = potential; values "may vary up to about 3 inches" <a class="cite" href="#src-35">[35]</a></td>
+<td>Horizontal hip-keypoint displacement toward the ball, address → impact, normalized by a body length. Pixel-to-inch conversion is not described in the patent text read</td>
+</tr>
+<tr>
+<td>Loss of posture</td>
+<td>"Any significant alteration from your body's original set up angles" (no number) <a class="cite" href="#src-33">[33]</a></td>
+<td>More than 10° change in head–hip–knee–ankle chain angles vs address = fault; 5–10° = potential; "may vary up to about 30 degrees" <a class="cite" href="#src-35">[35]</a></td>
+<td>Angle change is scale-invariant, so it fits 2D directly. Comparable 2D measure: ear–hip "forward tilt", about 45–60° in skilled DTL swings <a class="cite" href="#src-30">[30]</a></td>
+</tr>
+<tr>
+<td>Over the top</td>
+<td>Club above or outside the "slot" (the area between the address shaft line and the club line at lead forearm near parallel, just before the downswing starts) in early downswing <a class="cite" href="#src-34">[34]</a></td>
+<td>Club more than about 3 in in front of and above the impact-plane line, or more than about 6 in in front of and above the player = fault <a class="cite" href="#src-35">[35]</a>. The sign of the shaft-angle criterion is garbled in the extracted text</td>
+<td>Needs the club shaft. A pose-only proxy compares the hand path in transition with the backswing hand path. No numeric value was found for that proxy</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Patent source:</strong> US12608853B1, assignee Acushnet Co, filed 2025-06-24, granted 2026-04-21. It allows 2D or 3D images and 60/120/240 fps <a class="cite" href="#src-35">[35]</a>.</li>
+<li><strong>Prevalence:</strong> "about 70% of amateurs vs under 1% of tour players" for early extension circulates without a source. GOLF.com 2020 gives it unattributed, and no TPI data was found <a class="cite" href="#src-36">[36]</a>. <strong><i class="b u">Unverified</i>; do not cite it in the PRD as fact.</strong></li>
+<li><strong>Fault chains (domain basis):</strong></li>
+<li><strong>Early extension:</strong> TPI links it to the deep squat, hip bend, lead-hip rotation, trunk–pelvis separation and glute/core strength <a class="cite" href="#src-31">[31]</a>.</li>
+<li><strong>Loss of posture:</strong> TPI names its screens: overhead deep squat, toe touch, pelvic tilt, seated trunk rotation, 90/90 and the lat test <a class="cite" href="#src-33">[33]</a>.</li>
+<li><strong>Over the top:</strong> TPI links it to weight shift, hip mobility, glutes and abs, and lower/upper-body separation <a class="cite" href="#src-34">[34]</a>.</li>
+<li>This supports the brief's causes for the first two faults. For over the top, TPI's causes are physical, while the brief's "upper body starts the downswing" is a movement-sequence cause. Both are compatible.</li>
+</ul>
+<h2 id="cross-dimension-insights">Cross-dimension insights</h2>
+<ol>
+<li><strong>The measurement error is about as big as the threshold.</strong> General markerless pose has about 9–10° joint-angle error <a class="cite" href="#src-37">[37]</a>, and the patent's loss-of-posture threshold is 10° <a class="cite" href="#src-35">[35]</a>. Measuring change from the player's own address pose cancels part of the constant bias, but not jitter. That makes the confidence rule (margin from threshold, smoothed landmarks) part of the detector, not just a label. The "potential" band (5–10°) is the natural place to show medium confidence.</li>
+<li><strong>High fps helps detection and hurts speed, so trim the clip first.</strong> 240 fps is needed for event timing and to cut blur <a class="cite" href="#src-24">[24]</a><a class="cite" href="#src-30">[30]</a>, but 2,400 frames per 10 s strains the 2-minute budget <a class="cite" href="#src-1">[1]</a><a class="cite" href="#src-2">[2]</a><a class="cite" href="#src-4">[4]</a>. Run pose only on the swing window, about 2 s (≈480 frames at 240 fps), or subsample the backswing. The speed target then holds with margin. This is an inference from the sourced numbers, not a measured result.</li>
+<li><strong>Over the top is the weak link in the three-fault set.</strong> The definition is club-based <a class="cite" href="#src-34">[34]</a><a class="cite" href="#src-35">[35]</a>, the generic models do not track the club, and club keypoints are known to suffer from blur <a class="cite" href="#src-40">[40]</a>. The other two faults need only hip, shoulder and head keypoints, which are the most stable points from DTL.</li>
+<li><strong>The industry is doing what AIcoach plans.</strong> A Titleist-family patent from 2026 describes rule thresholds on DTL keypoints with "potential" bands <a class="cite" href="#src-35">[35]</a>. Swing Catalyst ships generic 2D RTMPose <a class="cite" href="#src-7">[7]</a><a class="cite" href="#src-8">[8]</a>. No competitor publishes DTL validation <a class="cite" href="#src-7">[7]</a><a class="cite" href="#src-9">[9]</a><a class="cite" href="#src-11">[11]</a><a class="cite" href="#src-16">[16]</a><a class="cite" href="#src-17">[17]</a><a class="cite" href="#src-18">[18]</a>. A small test set with known answers would therefore be stronger evidence than anything the competitors publish.</li>
+</ol>
+<h2 id="recommendations-for-the-prd">Recommendations (for the PRD)</h2>
+<ol>
+<li><strong>Write thresholds as configurable starting values with a source and a tuning rule.</strong> Use the patent values <a class="cite" href="#src-35">[35]</a> for early extension and loss of posture, with a "potential" band, and tune them on the labelled test videos. Say in the PRD that they come from one patent and are not validated norms. <em>Confidence: <i class="b m">medium</i> (one primary source, clear text).</em></li>
+<li><strong>Express distances relative to the body, angles in degrees.</strong> For example, early extension as hip displacement divided by a body length measured at address (as CaddieSet does with ratios <a class="cite" href="#src-23">[23]</a>); loss of posture as degree change from address. The conversion factor is a tuning decision for the PRD or architecture; no source gives it. <em>Confidence: <i class="b m">medium</i>.</em></li>
+<li><strong>Define confidence as a composite with three levels, and test it.</strong> The inputs are:
+   - the minimum visibility of the relevant landmarks in the event frames,
+   - the margin from the threshold (outside or inside the "potential" band),
+   - whether the event detection is clear.</li>
+</ol>
+<p>Do not show raw model scores as confidence <a class="cite" href="#src-6">[6]</a>. The success criterion: on the test set, "high" confidence results are correct more often than "low" ones. <em>Confidence: <i class="b v">medium-high</i> that raw scores should not be used; medium for the composite design.</em>
+4. <strong>Make the speed criterion a measured acceptance test.</strong> Keep "a 10 s clip in under 2 minutes", but trim to the swing window before running pose, and measure on the target laptop in a week-1 spike. Report the model choice and median time. <em>Confidence: <i class="b m">medium</i> (vendor-only numbers).</em>
+5. <strong>Require slow motion in the filming guide.</strong> Ask for 120 or 240 fps, good light, camera at hand height on the hand line, 8–12 ft away, tripod <a class="cite" href="#src-24">[24]</a><a class="cite" href="#src-26">[26]</a><a class="cite" href="#src-27">[27]</a>. Accept 30 fps only with a warning and capped confidence. <em>Confidence: <i class="b m">medium</i> (vendor/coach guidance, no standards body).</em>
+6. <strong>Detect events with the wrist heuristic first, with SwingNet as a fallback.</strong> The heuristic <a class="cite" href="#src-30">[30]</a> matches the view and frame rate, and is transparent. SwingNet is reliable for impact (about 98%), less so for top (83.9%), weak on address, and its NC license blocks the later paid launch <a class="cite" href="#src-21">[21]</a><a class="cite" href="#src-22">[22]</a>. Define address as stillness before takeaway, and add event detection to the test set, since no accuracy figure exists for the heuristic. <em>Confidence: <i class="b m">medium</i>.</em>
+7. <strong>Prototype both MediaPipe (Full/Heavy) and RTMPose-m in one day, on your own DTL clips.</strong> Pick by how stable the hip, shoulder and wrist points are through the downswing, and by speed. No golf comparison exists. RTMPose has a commercial golf precedent <a class="cite" href="#src-8">[8]</a> and the best published CPU speed <a class="cite" href="#src-1">[1]</a>; MediaPipe has VIDEO tracking and a defined visibility score <a class="cite" href="#src-3">[3]</a><a class="cite" href="#src-4">[4]</a>. Avoid YOLO unless you accept AGPL <a class="cite" href="#src-12">[12]</a>. <em>Confidence: <i class="b m">medium</i>.</em>
+8. <strong>Scope over the top honestly.</strong> Either (a) keep it with a hand-path proxy and a confidence capped at "medium", stated in the PRD, or (b) add a simple shaft-line detector as a stretch goal. If neither holds on the test set, replace it with sway, which the patent also defines from DTL <a class="cite" href="#src-35">[35]</a>. <em>Confidence: <i class="b m">medium</i>.</em>
+9. <strong>Do not cite the 70% early-extension prevalence</strong> without a primary source <a class="cite" href="#src-36">[36]</a>.</p>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li><strong>Laptop CPU speed</strong> of MediaPipe, RTMPose and YOLO-pose: no independent measurement exists. A 30-minute local timing script answers it.</li>
+<li><strong>Accuracy of the wrist heuristic</strong> for event detection on DTL video: not published. Label events on the test set and measure.</li>
+<li><strong>Pixel-to-inch conversion</strong> in the Acushnet patent, and the rest of its claims text: only 2 of about 5 sections were read. Reading the rest on Google Patents would answer it.</li>
+<li><strong>Golf-specific error of 2D pose body angles vs mocap:</strong> not found. The DTU full text <a class="cite" href="#src-10">[10]</a> and GolfPose (2022) are the leads.</li>
+<li><strong>A numeric over-the-top hand-path proxy:</strong> not found. It needs your own tuning or a club detector.</li>
+<li><strong>Effect of camera off the hand line</strong> on DTL measurements: only qualitative. You could film the same swing from two positions to quantify it.</li>
+<li><strong>TPI's primary data</strong> on early-extension prevalence: not found.</li>
+</ul>
+<h2 id="staleness-map">Staleness map</h2>
+<p>Computed with <code>recon_kit.py staleness</code>. The windows are taken from the technical pack: performance 6 months, licensing and competitor 6 months, capability 12 months, and patterns, events, capture, validity and thresholds 24 months. Undated pages that were current when accessed (Ultralytics docs and license, TPI) are entered as 2026-01.</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Class</th>
+<th>Pub</th>
+<th>Re-check</th>
+<th>Stale now?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="cite" href="#src-35">[35]</a> Acushnet patent thresholds</td>
+<td>threshold</td>
+<td>2026-04</td>
+<td>2028-04</td>
+<td>no</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-24">[24]</a> fps / shutter recommendation</td>
+<td>capture</td>
+<td>2026-01*</td>
+<td>2028-01</td>
+<td>no</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-2">[2]</a> YOLO26n-pose CPU speed</td>
+<td>performance</td>
+<td>2026-01*</td>
+<td>2026-07</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-12">[12]</a> Licenses (AGPL / Apache)</td>
+<td>licensing</td>
+<td>2026-01*</td>
+<td>2026-07</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-37">[37]</a> Markerless angle error 9–10°</td>
+<td>validity</td>
+<td>2024</td>
+<td>2026-01</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-30">[30]</a> Wrist heuristic for events</td>
+<td>event-detection</td>
+<td>2023-11</td>
+<td>2025-11</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-7">[7]</a><a class="cite" href="#src-9">[9]</a><a class="cite" href="#src-17">[17]</a> Competitor pose disclosures</td>
+<td>competitor</td>
+<td>2025-03</td>
+<td>2025-09</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-6">[6]</a> Keypoint confidence calibration</td>
+<td>capability</td>
+<td>2023-11</td>
+<td>2024-11</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-1">[1]</a> RTMPose-m CPU speed</td>
+<td>performance</td>
+<td>2023-03</td>
+<td>2023-09</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-4">[4]</a> MediaPipe model-card speeds</td>
+<td>performance</td>
+<td>2021-04</td>
+<td>2021-10</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><a class="cite" href="#src-21">[21]</a> SwingNet PCE</td>
+<td>event-detection</td>
+<td>2019-03</td>
+<td>2021-03</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>* undated page, current when accessed.</p>
+<p><strong>What "stale" means here:</strong> the speed figures are old or vendor-only, and the age of the source is not the main problem. All three performance claims are superseded by a local benchmark on your own laptop (recommendation 4), which is cheaper than another search. SwingNet and the wrist heuristic are foundational methods; check them for newer work only if you choose SwingNet. <strong>Earliest re-check that matters: now</strong>, through the week-1 speed and model spike. Re-check licenses and competitor disclosures before a real (paid) launch.</p>
+<details id="sources" open><summary>Source appendix</summary><div class="tw"><table class="sources"><tbody><tr id="src-1"><td>[1]</td><td>RTMPose CPU latency, accuracy, SimCC scores</td><td><a href="https://arxiv.org/abs/2303.07399" target="_blank" rel="noopener">arXiv (Jiang et al., RTMPose)</a></td><td>2023-03</td><td>2026-11-03</td><td>medium (single source for CPU speed)</td></tr><tr id="src-2"><td>[2]</td><td>YOLO26-pose CPU latency, keypoint confidence output</td><td><a href="https://docs.ultralytics.com/tasks/pose/" target="_blank" rel="noopener">Ultralytics docs</a></td><td>2026</td><td>2026-11-03</td><td>medium (CPU not named)</td></tr><tr id="src-3"><td>[3]</td><td>MediaPipe Pose Landmarker variants, VIDEO mode, thresholds</td><td><a href="https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker" target="_blank" rel="noopener">Google AI Edge docs</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-4"><td>[4]</td><td>BlazePose GHUM speeds, visibility/presence definitions, limits, PDJ accuracy</td><td><a href="https://storage.googleapis.com/mediapipe-assets/Model%20Card%20BlazePose%20GHUM%203D.pdf" target="_blank" rel="noopener">Google model card</a></td><td>2021-04</td><td>2026-11-03</td><td>high (as stated; phone hardware)</td></tr><tr id="src-5"><td>[5]</td><td>BlazePose browser fps with GPU</td><td><a href="https://blog.tensorflow.org/2021/05/high-fidelity-pose-tracking-with-mediapipe-blazepose-and-tfjs.html" target="_blank" rel="noopener">TensorFlow Blog</a></td><td>2021-05</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-6"><td>[6]</td><td>Keypoint confidences poorly calibrated</td><td><a href="https://arxiv.org/abs/2311.17105" target="_blank" rel="noopener">arXiv / ICML 2024</a></td><td>2023-11</td><td>2026-11-03</td><td>medium (abstract level)</td></tr><tr id="src-7"><td>[7]</td><td>Swing Catalyst body-tracking limits and views</td><td><a href="https://support.swingcatalyst.com/hc/en-us/articles/18829366835100" target="_blank" rel="noopener">Swing Catalyst support</a></td><td>2025-03</td><td>2026-11-03</td><td>high</td></tr><tr id="src-8"><td>[8]</td><td>Swing Catalyst uses RTMPose + RTMDet</td><td><a href="https://support.swingcatalyst.com/hc/en-us/articles/18829350333468" target="_blank" rel="noopener">Swing Catalyst support</a></td><td>2025-03</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-9"><td>[9]</td><td>Sportsbox AI self-validation vs AMM3D (face-on)</td><td><a href="https://help.sportsbox.ai/sportsbox-ai-accuracy" target="_blank" rel="noopener">Sportsbox AI help</a></td><td>~2025-01</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-10"><td>[10]</td><td>Monocular 3D pose too inaccurate for golf</td><td><a href="https://orbit.dtu.dk/en/publications/evaluating-current-state-of-monocular-3d-pose-models-for-golf/" target="_blank" rel="noopener">DTU / NLDL 2023</a></td><td>2023-01</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-11"><td>[11]</td><td>DeepSwing on-device claims</td><td><a href="https://apps.apple.com/en/app/deepswing/id6751551257" target="_blank" rel="noopener">Apple App Store</a></td><td>unknown</td><td>2026-11-03</td><td>low</td></tr><tr id="src-12"><td>[12]</td><td>Ultralytics AGPL-3.0</td><td><a href="https://www.ultralytics.com/license" target="_blank" rel="noopener">Ultralytics license</a></td><td>2026</td><td>2026-11-03</td><td>high</td></tr><tr id="src-13"><td>[13]</td><td>rtmlib Apache-2.0, models, backends</td><td><a href="https://github.com/Tau-J/rtmlib" target="_blank" rel="noopener">GitHub Tau-J/rtmlib</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-14"><td>[14]</td><td>MMPose Apache-2.0</td><td><a href="https://github.com/open-mmlab/mmpose/blob/main/LICENSE" target="_blank" rel="noopener">GitHub open-mmlab/mmpose</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-15"><td>[15]</td><td>MediaPipe Apache-2.0</td><td><a href="https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE" target="_blank" rel="noopener">GitHub google-ai-edge/mediapipe</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-16"><td>[16]</td><td>CoachNow skeleton tracking, no accuracy claims</td><td><a href="https://coachnow.com/blog/using-coachnows-ai-tools" target="_blank" rel="noopener">CoachNow blog</a></td><td>2025-03</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-17"><td>[17]</td><td>SwingNote on-device pose, angle selection</td><td><a href="https://apps.apple.com/app/id6783664876" target="_blank" rel="noopener">Apple App Store</a></td><td>2026-10</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-18"><td>[18]</td><td>Mustard 3D-model-based analysis claims</td><td><a href="https://www.golfdigest.com/story/what-an-average-golfer-learned-about-his-swing-new-technology-mustard" target="_blank" rel="noopener">Golf Digest</a></td><td>2024-07</td><td>2026-11-03</td><td>low (snippet)</td></tr><tr id="src-19"><td>[19]</td><td>Performance Golf SwingScan, no technical disclosure</td><td><a href="https://pg1.performancegolf.com/quiz/dqfe-lp-01-never-guess" target="_blank" rel="noopener">Performance Golf</a></td><td>unknown</td><td>2026-11-03</td><td>low</td></tr><tr id="src-20"><td>[20]</td><td>Off-the-shelf pose unreliable outdoors (vendor case study)</td><td><a href="https://litslink.com/case-studies/ai-golf-swing-analyzer" target="_blank" rel="noopener">Litslink</a></td><td>unknown</td><td>2026-11-03</td><td>low (snippet)</td></tr><tr id="src-21"><td>[21]</td><td>GolfDB dataset, SwingNet PCE per event, CPU time</td><td><a href="https://arxiv.org/abs/1903.06528" target="_blank" rel="noopener">arXiv (McNally et al.)</a></td><td>2019-03</td><td>2026-11-03</td><td>high</td></tr><tr id="src-22"><td>[22]</td><td>GolfDB code license, released-weight accuracy, demo limits</td><td><a href="https://github.com/wmcnally/golfdb" target="_blank" rel="noopener">GitHub wmcnally/golfdb</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-23"><td>[23]</td><td>CaddieSet: baseline confirmation, fine-tuned PCE, ratio normalization</td><td><a href="https://arxiv.org/html/2508.20491" target="_blank" rel="noopener">arXiv (CaddieSet)</a></td><td>2025-08</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-24"><td>[24]</td><td>Downswing timing, fps and shutter recommendation</td><td><a href="https://www.mytpi.com/articles/biomechanics/measuring-the-timing-of-the-golf-swing-from-video" target="_blank" rel="noopener">TPI (Cheetham)</a></td><td>unknown</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-25"><td>[25]</td><td>Blur depends on exposure; V1 recommends 1/2000 s</td><td><a href="https://www.kinovea.org/en/forum/viewtopic.php?pid=4630" target="_blank" rel="noopener">Kinovea forum</a></td><td>unknown</td><td>2026-11-03</td><td>low</td></tr><tr id="src-26"><td>[26]</td><td>V1 recording guide: DTL distance, 240 fps</td><td><a href="https://swing-analysis.v1sports.com/swing-analysis/swing-recording.md" target="_blank" rel="noopener">V1 Sports</a></td><td>unknown</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-27"><td>[27]</td><td>DTL camera at hand height, on the target line</td><td><a href="https://www.titleist.com/teamtitleist/team-titleist/f/golf-tips/54984/online-golf-instruction-how-to-film-your-swing" target="_blank" rel="noopener">Titleist</a></td><td>unknown</td><td>2026-11-03</td><td>medium</td></tr><tr id="src-28"><td>[28]</td><td>2D vs 3D validity: swing time and club angle only</td><td><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9385988/" target="_blank" rel="noopener">Scientific Reports (Hunter et al.)</a></td><td>2022-08</td><td>2026-11-03</td><td>high</td></tr><tr id="src-29"><td>[29]</td><td>Downswing 0.21–0.26 s (classic studies)</td><td><a href="https://oa.upm.es/2746/" target="_blank" rel="noopener">UPM repository (López de Subijana et al.)</a></td><td>unknown</td><td>2026-11-03</td><td>medium (snippet)</td></tr><tr id="src-30"><td>[30]</td><td>Wrist-trajectory event heuristic, DTL 240 Hz, forward-tilt angle</td><td><a href="https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2023.1272038/full" target="_blank" rel="noopener">Frontiers (Yamamoto et al.)</a></td><td>2023-11</td><td>2026-11-03</td><td>high</td></tr><tr id="src-31"><td>[31]</td><td>TPI early extension definition and fault chain</td><td><a href="https://www.mytpi.com/improve-my-game/swing-characteristics/early-extension" target="_blank" rel="noopener">TPI</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-32"><td>[32]</td><td>TPI DTL tailbone-line check for early extension</td><td><a href="https://www.mytpi.com/articles/swing/why-early-extension-causes-a-reduction-of-power-in-the-golf-swing" target="_blank" rel="noopener">TPI</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-33"><td>[33]</td><td>TPI loss of posture definition and screens</td><td><a href="https://www.mytpi.com/improve-my-game/swing-characteristics/loss-of-posture" target="_blank" rel="noopener">TPI</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-34"><td>[34]</td><td>TPI over the top definition, slot test, causes</td><td><a href="https://www.mytpi.com/improve-my-game/swing-characteristics/over-the-top" target="_blank" rel="noopener">TPI</a></td><td>unknown</td><td>2026-11-03</td><td>high</td></tr><tr id="src-35"><td>[35]</td><td>Acushnet patent: thresholds, potential bands, events, fps</td><td><a href="https://patents.google.com/patent/US12608853" target="_blank" rel="noopener">Google Patents US12608853B1</a></td><td>2026-04</td><td>2026-11-03</td><td>high (text) / medium (interpretation)</td></tr><tr id="src-36"><td>[36]</td><td>70% early-extension prevalence, unattributed</td><td><a href="https://www.golf.com/instruction/2020/03/02/chair-fix-problem-plaguing-70-percent-amateur-golfers/" target="_blank" rel="noopener">GOLF.com</a></td><td>2020-03</td><td>2026-11-03</td><td>low</td></tr><tr id="src-37"><td>[37]</td><td>Markerless pose about 9–10° joint-angle error in sports</td><td><a href="https://link.springer.com/article/10.1007/s12283-024-00460-w" target="_blank" rel="noopener">Sports Engineering (Springer)</a></td><td>2024</td><td>2026-11-03</td><td>low-medium (snippet)</td></tr><tr id="src-38"><td>[38]</td><td>MDPI Sensors 2025 golf similarity paper, shoulder-width normalization</td><td><a href="https://www.mdpi.com/1424-8220/25/22/7073" target="_blank" rel="noopener">MDPI Sensors</a></td><td>2025-11</td><td>2026-11-03</td><td>low (snippet)</td></tr><tr id="src-39"><td>[39]</td><td>Practitioner smoothing and gap interpolation for MediaPipe</td><td><a href="https://skills.sh/feniix/kinemotion/mediapipe-pose-detection" target="_blank" rel="noopener">skills.sh community guide</a></td><td>unknown</td><td>2026-11-03</td><td>low</td></tr><tr id="src-40"><td>[40]</td><td>Club motion blur and the hosel leaving the frame hinder club keypoints</td><td><a href="https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/12711647" target="_blank" rel="noopener">USPTO patent 12711647</a></td><td>unknown</td><td>2026-11-03</td><td>low (snippet)</td></tr><tr id="src-41"><td>[41]</td><td>Audio locates impact but is unreliable in noise</td><td><a href="https://patents.google.com/patent/US10080947" target="_blank" rel="noopener">Google Patents US10080947</a></td><td>unknown</td><td>2026-11-03</td><td>low (snippet)</td></tr></tbody></table></div></details></main></body></html>

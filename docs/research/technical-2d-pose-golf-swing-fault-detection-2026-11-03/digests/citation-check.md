@@ -1,0 +1,13 @@
+# Citation check (2026-11-03)
+
+| id | verdict | note |
+|---|---|---|
+| C1 [35] | supported | Assignee is Acushnet Co. Quotes: "more than about 6 inches may indicate an early extension" (3–6 in = potential); "over a 10 degree change in one or more of the angles, a loss of posture" (5–10° = potential); "greater than about 3 inches in front of and above the impact plane line may indicate an over the top"; "may vary up to about 3 inches for any values measured in inches" and "up to about 30 degrees for any angles". |
+| C2 [6] | supported | Abstract: "In practice, existing methods are poorly calibrated" (confidence vs. pose accuracy). |
+| C3 [1] | supported (minor caveat) | "RTMPose-m achieves 75.8% AP on COCO with 90+ FPS on an Intel i7-11700 CPU". Table 12: RTMDet-nano + RTMPose-m = 26.613 ms CPU. "ONNXRuntime with 1 thread" is stated in Sec. 4.3, but the paper does not say explicitly that it applies to the Table 12 pipeline row. |
+| C4 [21] | supported | "correctly detects eight golf swing events at an average rate of 76.1%"; "Disregarding the Address and Finish events, the overall PCE was 91.8%"; Table 2: Address 31.7, Impact 98.4, Finish 26.5. |
+| C5 [30] | supported | Camera at 240 Hz, 3.5 m behind the ball along the target line (DTL, though the article doesn't use that term). Top = "maximum value of the position" of the right wrist (vertical position); impact = wrist minimum after the top. Second-order Butterworth filter at 6 Hz. No event-detection accuracy reported. |
+| C6 [24] | supported | 120 fps minimum, 240 as an option ("higher timing resolution"); shutter "at least 1/1000 second"; Tour Tempo "ratio of 3:1", TPI 3D driver data gives 3.2. Note: the source offers 240 as an option rather than saying it is "preferred". |
+| C7 [7] | supported | "general-purpose model that is not specifically optimized for golf swing analysis"; "has undergone minimal quantitative testing"; "Low-resolution, shaky, or blurry videos can significantly reduce accuracy"; built for face-on and down-the-line views. |
+| C8 [9] | partly | AMM3D comparison, 30 golfers (one swing each), cameras "perpendicular to the target line" (face-on). The source says "approximately 2 degrees"; the "~2–2.5°" range is not on the page. |
+| C9 [34] | partly | Slot is drawn as "a line up the club shaft plane extending up past the shoulder" at address, plus a second line "the length of the club" when the lead forearm is "near parallel" to the ground. The source says "near parallel", not "just past parallel", and frames the moment as just before the downswing starts rather than as "in backswing". |
