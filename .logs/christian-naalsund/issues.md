@@ -18,5 +18,7 @@
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — confirm the 9 [ASSUMPTION] tags and 6 open questions in docs/prd/prd.md (§11–12)
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — decide over the top vs sway by 2026-12-08 based on the evaluation set
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — film and label separate tuning and evaluation sets (eval: ≥4 per fault, ≥3 clean, ≥3 outside the three faults)
-- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-ux, incl. sketches of the filming guide and result screen (teacher feedback)
+- [x] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-ux, incl. sketches of the filming guide and result screen (teacher feedback) (started 2026-11-12, sketches done, see [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md))
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-architecture (pose model, storage, LLM input, swing library storage limit)
+- [ ] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose 1–2 design directions from the 15 concepts and continue bmad-ux (DESIGN.md/EXPERIENCE.md)
+- [ ] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — add the AI chat on the result page to the PRD (Update), grounded in the analysis per the FR-14 rules
