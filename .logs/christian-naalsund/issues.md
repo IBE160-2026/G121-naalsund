@@ -21,5 +21,7 @@
 - [x] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-ux, incl. sketches of the filming guide and result screen (teacher feedback) (started 2026-11-12, sketches done, see [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md))
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-architecture (pose model, storage, LLM input, swing library storage limit)
 - [x] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose 1–2 design directions from the 15 concepts and continue bmad-ux (DESIGN.md/EXPERIENCE.md) (resolved 2026-11-24: 06 + 09 + 02, see decisions.md)
-- [ ] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — add the AI chat on the result page to the PRD (Update), grounded in the analysis per the FR-14 rules
-- [ ] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose a round 3 variation (or combination) and continue bmad-ux with DESIGN.md/EXPERIENCE.md
+- [ ] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — add the AI chat on the result page to the PRD (Update), grounded in the analysis per the FR-14 rules (decided 2026-11-24: chat is in the MVP)
+- [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose a round 3 variation (or combination) and continue bmad-ux with DESIGN.md/EXPERIENCE.md (resolved 2026-11-24: variation 01, spines final)
+- [ ] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — update the PRD for the automatic swing library and consent at sign-up (FR-18, §3, §6.1, SM-11), incl. the 50-clip limit
+- [ ] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — resolve the 13 Open Questions in EXPERIENCE.md (incl. how deleting a clip affects its analysis)
