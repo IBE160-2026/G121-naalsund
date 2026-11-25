@@ -20,7 +20,8 @@ From one source: Acushnet patent US12608853B1 (granted 2026-04-21), which itself
 |---|---|---|---|
 | Loss of posture | 5–10° change | >10° change | Patent defines the angle on head–hip–knee–ankle points; the PRD measurement must use the same definition (OQ3). 2D angle error ~9–10° (unverified) is the same size as the threshold — the confidence margin is part of the detector |
 | Early extension | 3–6 in | >6 in | Needs body-relative conversion; no source gives one |
-| Over the top | — | >~3 in in front of/above impact-plane line (patent also gives ~6 in as an alternative) | Defined on the club shaft; MVP uses hand-path proxy, capped at medium |
+| Over the top | — | >~3 in in front of/above impact-plane line (patent also gives ~6 in as an alternative) | Defined on the club shaft; MVP uses a hand-path proxy, capped at medium |
+| Sway (reserve; also the first extra measurement) | -3° to 0° vs address | below about -3° | Trail ankle-to-hip line angle, DTL (same patent). The same measurement feeds the unverified observation while sway is not a verified fault (PRD §4.5) |
 
 Do not cite "about 70 % of amateurs vs under 1 % of tour players" for early extension — no primary source.
 
@@ -51,4 +52,4 @@ Pose-model keypoint scores are poorly calibrated (ICML 2024), so the band is a c
 
 ## G. Course context
 
-Teacher feedback weighting: process 30 %, functionality 20 %, QA 15 %, design 10 %, code 10 %, README 10 %, repo 5 %. Feedback on the brief and where it is handled: sketches of the filming guide and result screens (→ UX phase), GDPR (now covered in PRD §6.1: retention, consent, LLM data, deletion; export next phase), LLM cost (Open Question 2).
+Teacher feedback weighting: process 30 %, functionality 20 %, QA 15 %, design 10 %, code 10 %, README 10 %, repo 5 %. Feedback on the brief and where it is handled: sketches of the filming guide and result screens (→ UX phase), GDPR (now covered in PRD §6.1: retention, legal basis and notice, language-model data, deletion; export next phase), LLM cost (Open Question 2).
