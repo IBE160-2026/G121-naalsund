@@ -586,7 +586,7 @@ Names match the YAML keys and EXPERIENCE.md → Component Patterns. Sizes and co
 
 **Coach message.** Mark + "Coach" + time, 8px gap between name and time. Body in Newsreader, no bubble, left-aligned on paper. One or two sentences per message.
 
-**Player message.** Right-aligned ink bubble with "Rory · 18:09" meta above it. The upload echo shows a first-frame thumbnail, file name and "3.8 s · 120 fps" in mono meta; while uploading `[ASSUMPTION]` a 4px clay progress bar runs along the bubble's bottom edge.
+**Player message.** Right-aligned ink bubble with "Rory · 18:09" meta above it. The upload echo shows a first-frame thumbnail, file name and "3.8 s" in mono meta (no fps: the server reads it, and the coach line states it); while uploading `[ASSUMPTION]` a 4px clay progress bar runs along the bubble's bottom edge.
 
 **Collapsed system line.** A 40px paper-2 pill: check circle + "Clip received · 7-iron_dtl.mov · 3.8 s · analysed in 41 s" + "Show ▾".
 
@@ -656,7 +656,7 @@ Names match the YAML keys and EXPERIENCE.md → Component Patterns. Sizes and co
 
 **Drop zone.** `{spacing.thread-width}` card with a dashed ink-2 border: an upload circle (paper 2, clay arrow), "Drop your swing clip here" in `{typography.card-title-lg}`, "or choose a file · mp4 or mov · max 15 s", a hairline, then one library note: "Goes into your swing library" (`{typography.card-title-sm}`) and "Stored on the AIcoach server until you delete it. Only you can see it." in meta `[ASSUMPTION]` copy. No toggle, no save control. Disabled (storage limit) `[ASSUMPTION]`: paper-2 fill, ink-2 text, the limit message as an inline message under it.
 
-**Ready-to-send preview (phone).** Clip preview card on keyframe ground with the first-frame skeleton and a play mark, file name in `{typography.label}`, "3.8 s of 15 s · 120 fps" in mono meta, the coach line, the same library note in a card, then "Send to the coach" (`button-primary`) and "Choose a different clip" (text button).
+**Ready-to-send preview (phone).** Clip preview card on keyframe ground with the first-frame skeleton and a play mark, file name in `{typography.label}`, "3.8 s of 15 s" in mono meta, the coach line, the same library note in a card, then "Send to the coach" (`button-primary`) and "Choose a different clip" (text button).
 
 **Step log.** Card with five rows (Pose · Swing events · Measurements · Rule table · Explanation): a 10px status circle joined to the next by a vertical line, the step name, mono details right-aligned. Circle states: done = high green with a check; active = clay partial ring; pending = hairline ring; **stopped** (rejection) = ink-2 ring with ×. A 4px clay progress bar with "3 of 5" in mono closes the card. The typing indicator sits under it.
 
@@ -678,7 +678,7 @@ Names match the YAML keys and EXPERIENCE.md → Component Patterns. Sizes and co
 
 **Disclosure rows.** A chevron says it opens in place. Three forms: the "Read my full explanation · 118 words ▾" text row (`{typography.row-title}` + meta count); the Evidence panel's "3 more measurements ›" row (paper 2, `{rounded.sm}`, 66px) and "Clip checks passed · 3 of 3" row (hairline outline, 46px, green check circle, mono count); and the phone's "Next: what to practise · 1 drill · 1 mobility" row (card, hairline, full pill).
 
-**Filming guide step.** "Step 3 of 6" in clay `{typography.label-strong}`, the rule in `{typography.screen-headline-mobile}`, a card with a top-down placement diagram (dashed target line with arrow, phone block, player ellipse in ghost body, mono distance "2.4–3.7 m · 8–12 ft" in teal), two to four lines of reason in ink 2, six 8px step dots (current = clay, others = hairline), then Back (`button-secondary`) and Next step (`button-primary`) side by side. Overview rows: a numbered paper-2 circle, the rule, a chevron.
+**Filming guide step.** "Step 3 of 6" in clay `{typography.label-strong}`, the rule in `{typography.screen-headline-mobile}`, a card with a top-down placement diagram (dashed target line with arrow, phone block, player ellipse in ghost body, mono distance "2.4–3.7 m · 8–12 ft" in teal), two to four lines of reason in ink 2, six 8px step dots (current = clay, others = hairline), then Back (`button-secondary`) and Next step (`button-primary`) side by side. Overview rows: a numbered paper-2 circle, the rule, a chevron; under the six rows one mono meta line in ink 2, "AIcoach reads right-handed swings for now." The same meta line sits under the create-account form.
 
 **Buttons.** Primary = `button-primary` (one per screen). Disabled primary = `button-primary-disabled`. Secondary = `button-secondary` ("Read the filming guide", "Ask the coach about this", "Delete account", "Keep my account", "Try again"). Dark = `button-dark` ("New swing"; "Delete everything" and other destructive confirmations inside a sheet).
 

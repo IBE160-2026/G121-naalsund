@@ -15,6 +15,8 @@ It builds on the revised product brief (`docs/product-brief/brief.md`, 2026-11-0
 
 **Revision 2026-11-25.** Reconciled with the finalized UX design (`docs/_bmad-output/planning-artifacts/ux-designs/ux-AIcoach-2026-11-11/`) and the teacher feedback on the PRD (`docs/prd/tilbakemelding-prd.md`). Main changes: grounded AI coach chat is in the MVP (§4.9); every swing clip goes into the swing library automatically, with one consent at sign-up (§4.8, §6.1); the unverified observation is built from a closed list of extra measurements (§4.5); sway has a reserve row in the rule table (§4.4); the cut order has checkpoint dates (§8.1).
 
+**Revision 2026-11-25 (architecture).** Aligned with the architecture spine (`docs/_bmad-output/planning-artifacts/architecture/architecture-AIcoach-2026-11-25/`): the MVP reads right-handed swings only (§2.2, FR-4, §9).
+
 Terms in §3 Glossary are used verbatim throughout. Each feature in §4 contains its FRs, which are numbered globally. Inferred points are tagged `[ASSUMPTION]` inline and indexed in §12. Implementation detail (pose models, filters, threshold sources, licences) lives in `addendum.md`.
 
 ## 1. Vision
@@ -43,6 +45,7 @@ The coach voice matters as much as the numbers: AIcoach tells the player what th
 - Beginners who cannot yet make a repeatable full swing — the three faults and their drills assume a functioning swing. They are not blocked, but the MVP is not designed for them.
 - Elite players seeking launch-monitor-grade precision — they will be served later as a complement to their coach.
 - Anyone using the app during a competitive round — the Rules of Golf restrict advice; AIcoach is a practice tool only.
+- Left-handed golfers — the MVP reads right-handed swings only, because the measurements depend on the lead and trail side. The filming guide and sign-up say so; the app does not detect handedness. Left-handed support is next phase (§9).
 
 ### 2.3 Key User Journeys
 
@@ -153,6 +156,7 @@ A player can view a filming guide that states: DTL view only; camera at hand hei
 
 **Consequences (testable):**
 - The guide is readable on a phone screen without horizontal scrolling.
+- The guide states that AIcoach reads right-handed swings only (§2.2).
 - Each rejection reason (FR-8) links to the guide step that addresses it.
 
 #### FR-5: Upload swing clip
@@ -438,6 +442,7 @@ Described for direction, not committed. Order to be decided after the MVP.
 
 - **Launch-monitor data (TrackMan and similar).** A player can attach launch-monitor data (e.g. club path, face angle, ball speed, launch, carry) to a swing clip of the same shot, so AIcoach can link what the body did to what the ball and club did — for example, connecting over the top to an out-to-in club path. Neither research report covered this; only one competitor (DeepSwing, with its own camera-based launch monitor) links ball data to swing faults, and no competitor was found importing TrackMan data. Requires its own research (import formats, shot-to-clip matching) before it is specified.
 - **Face-on view and two-angle analysis**, then 3D pose.
+- **Left-handed players**: a handedness choice on the account that mirrors the lead/trail mapping.
 - **More verified faults.**
 - **Cue memory**: learning which drills and wording change this player's swing, judged from the next swing clips, not from how the swing feels; trying an alternative drill when one does not work.
 - **Chat across analyses**: grounded in all of the player's own analyses, so the coach can talk about progress.

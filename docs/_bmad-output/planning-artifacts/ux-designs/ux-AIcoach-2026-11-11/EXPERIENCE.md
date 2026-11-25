@@ -10,6 +10,7 @@ sources:
   - .memlog.md
   - decisions.md
   - DESIGN.md
+  - ../../architecture/architecture-AIcoach-2026-11-25/ARCHITECTURE-SPINE.md
 ---
 
 # AIcoach — Experience Spine
@@ -18,7 +19,7 @@ sources:
 
 A single-surface **responsive web app** (PRD §7: no native app) used in two real contexts: a **phone browser at the range** (filming guide, upload, reading the result between balls) and a **laptop** (reading the result in depth, swing library, account). NFR-2: in the MVP the app runs on the author's or examiner's laptop and the phone reaches it over the same Wi-Fi. NFR-5: filming guide, upload and result work on a phone browser. NFR-6: UI and explanations are in English.
 
-No UI kit is named in the PRD, and no architecture document exists yet. `[ASSUMPTION]` no component library; components are built to `DESIGN.md`, which holds the visual spec. This spine holds the behaviour. If architecture picks a library, it inherits these specs as a brand layer.
+Architecture (`../../architecture/architecture-AIcoach-2026-11-25/ARCHITECTURE-SPINE.md`, AD-22) picks shadcn/ui as the unstyled component base, restyled only through `DESIGN.md` tokens. `DESIGN.md` holds the visual spec and is the brand layer. This spine holds the behaviour.
 
 **Decisions made in UX (2026-11-24) and adopted by the PRD revision of 2026-11-25:**
 
@@ -28,6 +29,16 @@ No UI kit is named in the PRD, and no architecture document exists yet. `[ASSUMP
 | Every uploaded swing clip, including rejected ones, goes into the swing library automatically and stays until the player deletes it. At most 50 swing clips per player. | FR-18, FR-19, §6.1 |
 | One required checkbox at sign-up, an acknowledgement (legal basis: the service agreement). No save toggle or save button anywhere. | FR-1, §3 library consent, §6.1 |
 | The unverified observation is built from a closed list of extra measurements and appears only when one passes its threshold; a result can have none. | FR-13 |
+
+**Decisions from the architecture (2026-11-25) adopted here:**
+
+| Decision | Architecture |
+|---|---|
+| AIcoach reads **right-handed swings only** in the MVP. The filming guide overview and the sign-up page say so; the app does not detect handedness. | AD-13, PRD §2.2 |
+| The frame rate is known only after the server has read the clip. The browser shows file name and length before sending; fps first appears in the coach's "Got it — … at 120 fps." line once the Pose step reports it. | AD-15 |
+| A clip or analysis cannot be deleted while its analysis is waiting or running; delete controls are disabled with a reason. Deleting the account is always possible. | AD-8 |
+| The playback copy is made just after the analysis finishes, so a clip can briefly be "preparing playback". | AD-15 |
+| A failed analysis can be re-run on the stored clip ("Try again") as long as the clip still exists. The step log stops at the step that found a rejection reason; frame rate and decoding are checked inside the Pose step. | AD-6 (resolves the former Open Questions on the step log and time-out) |
 
 **Glossary.** Terms from PRD §3 are used verbatim in UI copy and here: player, swing clip, swing library, down the line, filming guide, analysis, result, rejection, swing event, key frame, measurement, confidence band, rule table, verified fault, possible fault, extra measurement, unverified observation, fault chain, feel cue, drill, mobility exercise, explanation, mock mode. One term is redefined: **swing library** = every swing clip the player has sent, each linked to its analysis (result or rejection), kept until the player deletes it. "Saved" is not used in UI copy.
 
@@ -40,7 +51,7 @@ No UI kit is named in the PRD, and no architecture document exists yet. `[ASSUMP
 | Landing | Root URL, signed out | Promise, mechanism, honesty, CTA to create account | FR-1 | `mockups/01-landing.svg` |
 | Sign in | Landing header; any protected URL while signed out | Email + password | FR-1 | `mockups/05-other-pages.svg` |
 | Create account | Landing CTA; "Create an account" on sign in | Email + password + the required library consent checkbox | FR-1, §6.1 | `mockups/05-other-pages.svg` |
-| Filming guide (overview) | Rail / menu; checklist link on upload; landing secondary CTA | Six steps, one line each | FR-4 | `mockups/05-other-pages.svg` |
+| Filming guide (overview) | Rail / menu; checklist link on upload; landing secondary CTA | Six steps, one line each, and the right-handed-only line | FR-4 | `mockups/05-other-pages.svg` |
 | Filming guide step | Overview row; rejection reason link | One rule, one diagram, one reason; Back / Next step | FR-4, FR-8 | `mockups/05-other-pages.svg` |
 | New swing (upload) | "New swing" in rail / menu; "Film again" | Coach asks for one clip; checklist; drop zone with the library note | FR-5 | `mockups/02-upload.svg`, `mockups/03-upload-mobile.svg` |
 | Analysing | Sending a clip (same thread, same URL) | Step log streams in; Evidence pins fill | FR-5, FR-6 | `mockups/02-upload.svg`, `mockups/03-upload-mobile.svg` |
@@ -90,7 +101,7 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 |---|---|---|
 | Coach mark and wordmark | Rail, top bar, every coach message | Wordmark links home: the landing when signed out, the latest thread when signed in `[ASSUMPTION]`. The mark next to a message is not interactive. |
 | Coach message | Thread | One or two sentences. Never contains a number without a pin. Arrives whole (no token streaming) `[ASSUMPTION]`, announced politely to screen readers. |
-| Player message | Thread | Echo of the player's question or uploaded clip, right-aligned. The upload echo shows file name, length and fps, and upload progress while uploading. |
+| Player message | Thread | Echo of the player's question or uploaded clip, right-aligned. The upload echo shows file name and length, and upload progress while uploading. It never shows fps: the server reads the frame rate, and the coach's next line states it (AD-15). |
 | Collapsed system line | Thread top after analysis | Folds the upload exchange and the checklist into one line; "Show" expands it in place, "Hide" folds it again. |
 | Typing indicator | Analysing, chat | Shown while the coach is working; removed when the message arrives. Not announced repeatedly to screen readers. |
 | Composer | Result thread | Enabled only once a result exists. Enter sends; Shift+Enter adds a line. Sending disables it until the answer arrives. Empty input cannot be sent. Hidden on a rejection (FR-20). |
@@ -147,7 +158,7 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Consent checkbox | Create account | Required, unticked by default, never pre-ticked. The label is the full consent text and toggles the box. "Create account" stays disabled until the box is ticked; unticking disables it again. The acknowledgement is recorded with the account. It is not GDPR consent: storing clips is part of the service (PRD §6.1, legal basis contract). It is the only such checkbox in the app. |
 | List row | Filming guide, swing library, account | The whole row is the target; a chevron means it navigates; a trash icon deletes (with a confirm sheet). |
 | Rail swing row | Rail | Opens that thread. The active thread is highlighted. |
-| Clip detail | Swing library | Native video controls, no autoplay. "Open analysis" opens the thread. "Delete clip" opens a confirm sheet (see State Patterns → Deleting a clip). |
+| Clip detail | Swing library | Native video controls, no autoplay. "Open analysis" opens the thread. "Delete clip" opens a confirm sheet (see State Patterns → Deleting a clip). While the clip's analysis is waiting or running, "Delete clip" is disabled (see Delete while analysing). |
 | Filming guide step | Filming guide | Back / Next step at the bottom; step dots show position; "I'm ready to film" on the overview goes to New swing. |
 | Buttons | Everywhere | One primary (clay) per screen. Destructive confirmation uses the dark button inside a sheet. |
 | Bottom sheet | Delete confirmations, evidence tray, enlarged key frame | Focus moves into the sheet; Esc, swipe down or a scrim tap closes it (except while a delete is in progress). |
@@ -162,9 +173,9 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 |---|---|---|
 | Waiting for a clip | New swing | Coach message + checklist + drop zone with the library note. Composer disabled: "You can ask the coach once the result is ready." Evidence panel: placement diagram, placeholders, "0 pins · Nothing measured yet." |
 | Clip refused before upload | New swing | Inline message under the drop zone, in the coach's voice: "That clip is 22 s. I can read up to 15 s — trim it and send it again." / "I read mp4 or mov files." Nothing is uploaded (FR-5). `[ASSUMPTION]` copy. |
-| Ready to send (phone) | New swing | Clip preview with first-frame skeleton, file name, "3.8 s of 15 s · 120 fps", coach line "Looks right. Send it when you're ready.", the library note, "Send to the coach", "Choose a different clip". |
+| Ready to send (phone) | New swing | Clip preview with first frame, file name, "3.8 s of 15 s" (length from the browser, advisory; the server re-checks), coach line "Looks right. Send it when you're ready.", the library note, "Send to the coach", "Choose a different clip". |
 | Uploading | New swing | `[ASSUMPTION]` the player's clip bubble shows upload progress; the step log starts when the upload completes. |
-| Analysing | Thread | Clip bubble, then "Got it — a clean down-the-line clip at 120 fps. Watching now." The step log fills in order with "n of 5" and the typing indicator "Coach is watching your swing…". Evidence pins fill live ("2 pins so far", "drawing lines…", "measuring…"). Composer disabled. Expected duration per NFR-1 (under 2 min for 10 s). |
+| Analysing | Thread | Clip bubble, then — once the Pose step has read the clip — "Got it — a clean down-the-line clip at 120 fps. Watching now." (the fps comes from the server). The step log fills in order with "n of 5" and the typing indicator "Coach is watching your swing…". Evidence pins fill live ("2 pins so far", "drawing lines…", "measuring…"). Composer disabled. Expected duration per NFR-1 (under 2 min for 10 s). |
 | Analysis takes too long | Thread | `[ASSUMPTION]` after 3 min (NFR-1's limit for a 15 s clip) the typing indicator stays and a coach line appears: "This is taking longer than it should. I'm still watching." The step log keeps its place. No action is offered until it ends. |
 | Analysis fails (crash or error) | Thread | `[ASSUMPTION]` the step log row that was running shows "stopped"; coach line: "Something went wrong on my side, not with your clip. Nothing was analysed." with "Try again" (re-runs the same clip) and "New swing". The clip stays in the swing library with the row "Not analysed". A system failure is never shown as a rejection or a result, and never lists filming reasons. |
 | Storage limit reached | New swing | Drop zone disabled with "Your swing library is full (50 clips). Delete a clip before sending a new one." and a link to the swing library (FR-5, FR-19). "Clip deleted" rows do not count. `[ASSUMPTION]` copy. |
@@ -192,6 +203,7 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | State | Surface | Treatment |
 |---|---|---|
 | Cold load | Existing thread, swing library, clip detail, account | `[ASSUMPTION]` content loads behind dashed placeholders in the final layout; no spinners. A load failure shows "Couldn't load this. Try again." inline. |
+| Right-handed note | Create account, filming guide overview | One meta line, always shown: "AIcoach reads right-handed swings for now." `[ASSUMPTION]` copy. Not a control and not a field (architecture AD-13, PRD §2.2). |
 | Consent not ticked | Create account | "Create account" disabled; meta under it: "Tick the box to create your account." `[ASSUMPTION]` copy. |
 | Email in use | Create account | "An account with this email already exists. Sign in instead?" (FR-1). The consent box keeps its state. |
 | Sign-in error | Sign in | "That email and password don't match." under the form. |
@@ -203,7 +215,9 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Deleting an analysis | Account, "clip deleted" row | Confirm sheet (FR-3): "Delete this analysis? Its result and key frames are removed. The swing clip stays in your swing library." On success the row disappears (FR-3). |
 | Deleting a clip | Clip detail, swing library | Confirm sheet (FR-19): "Delete this clip?" with "Delete clip, keep analysis" and "Delete clip and analysis". Keeping the analysis turns the row into a "clip deleted" row; deleting both removes the row. |
 | Delete failed | Account, library | "Couldn't delete. Nothing was removed. Try again." inline or in the open sheet. |
-| Playback fails | Clip detail | `[ASSUMPTION]` "This clip can't play in this browser." The analysis can still be opened. |
+| Delete while analysing | Clip detail, swing library, account | The trash icon and "Delete clip" are disabled while the analysis is waiting or running, with meta "You can delete this once the analysis has finished." `[ASSUMPTION]` copy. If the server still refuses (409), the inline "Couldn't delete" message appears. Delete account stays available (AD-8). |
+| Preparing playback | Clip detail, library thumbnail | For a few seconds after the analysis ends: a dashed poster tile with "Preparing playback…" and no play control; it becomes playable when ready (polled like the analysis). `[ASSUMPTION]` copy. The analysis can be opened meanwhile (AD-15). |
+| Playback fails | Clip detail | Server could not make a playable copy (playback state failed): "This clip can't be played back." The browser cannot play the file: "This clip can't play in this browser." `[ASSUMPTION]` copy. In both cases the analysis can still be opened. |
 | Not found / not yours | Any thread or clip URL | "This analysis doesn't exist or isn't yours." + a link to your swings (FR-2). |
 | Network lost (phone at the range) | Upload, chat | `[ASSUMPTION]` inline: "Can't reach AIcoach. Check you're on the same Wi-Fi as the laptop." with "Try again". |
 | Focus | All | Visible focus ring on every interactive element (see Accessibility Floor). |
@@ -294,7 +308,7 @@ The chosen direction is round 3 variation 01 **Faithful Merge** (`.working/round
 1. Rory, signed in on his phone browser, taps ≡ → Filming guide and skims the six steps.
 2. He props the phone on his bag at hand height, 3 m behind the hands line, and films a 7-iron at 120 fps.
 3. He taps "New swing". The coach asks for one swing down the line; the checklist is the message. He taps "Choose swing clip".
-4. Ready to send: he sees the clip, "3.8 s of 15 s · 120 fps", and taps "Send to the coach".
+4. Ready to send: he sees the clip, "3.8 s of 15 s", and taps "Send to the coach".
 5. Analysing: "Got it — a clean down-the-line clip at 120 fps. Watching now." Pose and Swing events tick done; the Evidence chip reads "Evidence · 2" as the address and impact frames pin themselves.
 6. **Climax:** the coach says "Your hips are moving toward the ball through impact. That's early extension, and I'm sure of it." Under it: **Early extension · confidence: high · 7% · rule: 4%** with the address and impact key frames, the hip ringed and the dashed address line showing the gap. The feel cue lands: "It may feel like you stay down, but at impact your hips have moved toward the ball."
 7. He taps "Next: what to practise": Wall drill 3 × 10, 90/90 hip rotation 2 × 8 with the medical notice.
@@ -358,7 +372,7 @@ Failure: the network drops at the range → inline "Can't reach AIcoach. Check y
 ### Flow 8 — Rory creates his account (sign-up and library consent, FR-1; precedes Flow 1)
 
 1. Rory taps "Create account" on the landing page.
-2. He enters his email and a password. "Create account" is disabled; under it: "Tick the box to create your account."
+2. He enters his email and a password. "Create account" is disabled; under it: "Tick the box to create your account." The meta line "AIcoach reads right-handed swings for now." sits under the form.
 3. **Climax:** he reads the one checkbox — "I understand that every swing clip I send is stored in my swing library on the AIcoach server until I delete it." — and ticks it. "Create account" turns clay and active.
 4. He taps it and lands on New swing, signed in.
 
@@ -366,14 +380,12 @@ Failure: the email is already in use → "An account with this email already exi
 
 ## Open Questions
 
-Visual questions (dark mode, "possible" chip contrast, font loading, landing on the phone) are in DESIGN.md → Open Questions. Resolved by the PRD revision of 2026-11-25 and removed here: the chat FR, swing library and consent, delete coupling, history overlap, and the unverified observation in the MVP.
+Visual questions (dark mode, "possible" chip contrast, font loading, landing on the phone) are in DESIGN.md → Open Questions. Resolved by the PRD revision of 2026-11-25 and removed here: the chat FR, swing library and consent, delete coupling, history overlap, and the unverified observation in the MVP. Resolved by the architecture (2026-11-25, AD-6) and removed: which checks run in which step (fps and decoding inside Pose; the log stops at the step that found the problem), and whether a failed analysis can be re-run on the stored clip (yes, while the clip exists).
 
-1. **Rejection in the step log.** Assumed: the log stops at the step that found the problem. Architecture should confirm which checks run in which step (fps may be known before Pose).
-2. **Desktop sends on drop.** Assumed: no ready-to-send step on desktop. Confirm.
-3. **Several verified faults on one swing.** Not mocked; ordering and layout assumed.
-4. **Spine-only surfaces.** Clip detail, compare (FR-17), the no-observation and fault-plus-observation states, the "clip deleted" row and the analysis-failed state are not mocked; confirm that spine-only is enough.
-5. **Narrow-laptop breakpoint.** Confirm 1344px for the Evidence drawer, and the 1024 / 768 steps.
-6. **UI language.** NFR-6 says English and the mockups are English; confirm no Norwegian UI is wanted for the course demo.
-7. **Mock-mode label** visible to the examiner: yes or no?
-8. **Copy sign-off.** Low- and medium-confidence wording, the 30–119 fps warning, the checkbox helper line, the library note, the no-observation line and the analysis-failed line.
-9. **Time-out and failure.** The 3-minute "taking longer" line and the failed-analysis "Try again" are assumed; architecture decides whether a failed analysis can be re-run on the stored clip.
+1. **Desktop sends on drop.** Assumed: no ready-to-send step on desktop. Confirm.
+2. **Several verified faults on one swing.** Not mocked; ordering and layout assumed.
+3. **Spine-only surfaces.** Clip detail, compare (FR-17), the no-observation and fault-plus-observation states, the "clip deleted" row, the analysis-failed state, "Preparing playback" and "Delete while analysing" are not mocked; confirm that spine-only is enough.
+4. **Narrow-laptop breakpoint.** Confirm 1344px for the Evidence drawer, and the 1024 / 768 steps.
+5. **UI language.** NFR-6 says English and the mockups are English; confirm no Norwegian UI is wanted for the course demo.
+6. **Mock-mode label** visible to the examiner: yes or no?
+7. **Copy sign-off.** Low- and medium-confidence wording, the 30–119 fps warning, the checkbox helper line, the library note, the no-observation line, the analysis-failed line, the 3-minute "taking longer" line, and the new right-handed, delete-while-analysing and playback lines.
