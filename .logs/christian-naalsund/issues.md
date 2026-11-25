@@ -5,7 +5,7 @@
 - [x] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — bekreft de tre feilene og drill/mobilitet per feil (løst 2026-11-02)
 - [x] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — skriv egen golfbakgrunn i briefen (løst 2026-11-02)
 - [ ] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — legg opplastingsmappe for videoer i .gitignore når stack er valgt
-- [ ] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — velg input/modell og kostnad for åpen KI-observasjon (arkitektur)
+- [x] 2026-11-02 [revider-product-brief](998-2026-11-02-14-50-00-revider-product-brief.md) — velg input/modell og kostnad for åpen KI-observasjon (arkitektur) (løst 2026-11-25: input = CoachFacts/mal, AD-18/AD-19; modell og kostnad følges i OQ2-punktet, se [arkitektur](993-2026-11-25-14-17-25-arkitektur.md))
 - [x] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — use the findings in the PRD: explainable fault chain + confidence per metric + mobility tied to the fault (not "root-cause detection") (løst 2026-11-03, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — refresh the competitive research before the final PRD/hand-in (earliest re-check 2026-12-01)
 - [ ] 2026-11-02 [competitive-research](997-2026-11-02-16-15-51-competitive-research.md) — get recent customer voice (Reddit/Google Play), e.g. with a Deep Recon draft prompt
@@ -19,7 +19,7 @@
 - [x] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — decide over the top vs sway by 2026-12-08 based on the evaluation set (erstattet 2026-11-25: avgjøres på tuningsettet innen 2026-12-01, se nytt punkt)
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — film and label separate tuning and evaluation sets (eval: ≥4 per fault, ≥3 clean, ≥3 outside the three faults)
 - [x] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-ux, incl. sketches of the filming guide and result screen (teacher feedback) (started 2026-11-12, sketches done, see [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md))
-- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-architecture (pose model, storage, LLM input, swing library storage limit)
+- [x] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-architecture (pose model, storage, LLM input, swing library storage limit) (løst 2026-11-25, se [arkitektur](993-2026-11-25-14-17-25-arkitektur.md))
 - [x] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose 1–2 design directions from the 15 concepts and continue bmad-ux (DESIGN.md/EXPERIENCE.md) (resolved 2026-11-24: 06 + 09 + 02, see decisions.md)
 - [x] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — add the AI chat on the result page to the PRD (Update), grounded in the analysis per the FR-14 rules (decided 2026-11-24: chat is in the MVP) (løst 2026-11-25: FR-20, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose a round 3 variation (or combination) and continue bmad-ux with DESIGN.md/EXPERIENCE.md (resolved 2026-11-24: variation 01, spines final)
@@ -27,8 +27,12 @@
 - [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — resolve the 13 Open Questions in EXPERIENCE.md (incl. how deleting a clip affects its analysis) (delvis løst 2026-11-25: 9 igjen, se nytt punkt)
 - [x] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — oppdater UX (bmad-ux Update): «No verified fault found» uten observasjon, «clip deleted»-rad, observasjon ved siden av verifisert feil, slettebekreftelser (løst 2026-11-25, se [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md))
 - [x] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — UX-bibliotekrader viser «club» uten kilde i PRD: fjern fra UX eller legg til i PRD (løst 2026-11-25: fjernet fra UX)
-- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — beskriv tilstand for krasj/tidsavbrudd i analysen (arkitektur/UX)
+- [x] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — beskriv tilstand for krasj/tidsavbrudd i analysen (arkitektur/UX) (løst 2026-11-25: AD-5/AD-6 failed + retry + timeout, se [arkitektur](993-2026-11-25-14-17-25-arkitektur.md))
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — avgjør over the top vs sway på tuningsettet innen 2026-12-01 (P1-sjekkpunkt)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ7: velg ekstramåling som erstatter sway etter et eventuelt bytte (tuningsettet)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ2: velg språkmodell og kostnad per analyse og per chatspørsmål (arkitektur)
 - [ ] 2026-11-25 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — avklar de 9 gjenstående Open Questions i EXPERIENCE.md (tekstgodkjenning, mock-mode-merke, udesignede tilstander m.m.)
+- [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — kjør bmad-create-epics-and-stories fra PRD + UX + ARCHITECTURE-SPINE.md, i P1/P2/P3-rekkefølge
+- [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — uke 1-spike i tillegg: fps og varighet for iPhone slow-motion-eksport, python:3.14-slim + libegl1/libgles2, arm64-hjul; oppdater AD-15 før opplastingsstoriene hvis slow-motion feiler
+- [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — oppdater UX (EXPERIENCE.md) etter arkitekturen: fps først etter serveravlesning, sletting av under analyse (409), «playback not ready», kun høyrehendte i filmeguide/registrering; legg «kun høyrehendte» i PRD §2.2
+- [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — ta backup av EVAL_DATA_DIR (testklippene) utenfor laptopen når de er filmet
