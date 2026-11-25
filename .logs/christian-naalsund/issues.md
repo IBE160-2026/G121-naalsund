@@ -16,12 +16,18 @@
 - [ ] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — film testvideoene i 120/240 fps, god belysning, kamera i håndhøyde på hand line
 - [x] 2026-11-03 [teknisk-recon-2d-positur](996-2026-11-03-16-35-36-teknisk-recon-2d-positur.md) — ikke siter «70 % av amatører early-extender» i PRD (ingen primærkilde) (løst 2026-11-03, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — confirm the 9 [ASSUMPTION] tags and 6 open questions in docs/prd/prd.md (§11–12)
-- [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — decide over the top vs sway by 2026-12-08 based on the evaluation set
+- [x] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — decide over the top vs sway by 2026-12-08 based on the evaluation set (erstattet 2026-11-25: avgjøres på tuningsettet innen 2026-12-01, se nytt punkt)
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — film and label separate tuning and evaluation sets (eval: ≥4 per fault, ≥3 clean, ≥3 outside the three faults)
 - [x] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-ux, incl. sketches of the filming guide and result screen (teacher feedback) (started 2026-11-12, sketches done, see [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md))
 - [ ] 2026-11-03 [prd](995-2026-11-03-17-24-03-prd.md) — run bmad-architecture (pose model, storage, LLM input, swing library storage limit)
 - [x] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose 1–2 design directions from the 15 concepts and continue bmad-ux (DESIGN.md/EXPERIENCE.md) (resolved 2026-11-24: 06 + 09 + 02, see decisions.md)
-- [ ] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — add the AI chat on the result page to the PRD (Update), grounded in the analysis per the FR-14 rules (decided 2026-11-24: chat is in the MVP)
+- [x] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — add the AI chat on the result page to the PRD (Update), grounded in the analysis per the FR-14 rules (decided 2026-11-24: chat is in the MVP) (løst 2026-11-25: FR-20, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose a round 3 variation (or combination) and continue bmad-ux with DESIGN.md/EXPERIENCE.md (resolved 2026-11-24: variation 01, spines final)
-- [ ] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — update the PRD for the automatic swing library and consent at sign-up (FR-18, §3, §6.1, SM-11), incl. the 50-clip limit
+- [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — update the PRD for the automatic swing library and consent at sign-up (FR-18, §3, §6.1, SM-11), incl. the 50-clip limit (løst 2026-11-25: FR-1/18/19, §6.1, SM-11, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [ ] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — resolve the 13 Open Questions in EXPERIENCE.md (incl. how deleting a clip affects its analysis)
+- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — oppdater UX (bmad-ux Update): «No verified fault found» uten observasjon, «clip deleted»-rad, observasjon ved siden av verifisert feil, slettebekreftelser
+- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — UX-bibliotekrader viser «club» uten kilde i PRD: fjern fra UX eller legg til i PRD
+- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — beskriv tilstand for krasj/tidsavbrudd i analysen (arkitektur/UX)
+- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — avgjør over the top vs sway på tuningsettet innen 2026-12-01 (P1-sjekkpunkt)
+- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ7: velg ekstramåling som erstatter sway etter et eventuelt bytte (tuningsettet)
+- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ2: velg språkmodell og kostnad per analyse og per chatspørsmål (arkitektur)
