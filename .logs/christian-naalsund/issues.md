@@ -32,8 +32,11 @@
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ7: velg ekstramåling som erstatter sway etter et eventuelt bytte (tuningsettet)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ2: velg språkmodell og kostnad per analyse og per chatspørsmål (arkitektur)
 - [x] 2026-11-25 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — avklar de 9 gjenstående Open Questions i EXPERIENCE.md (tekstgodkjenning, mock-mode-merke, udesignede tilstander m.m.) (delvis løst 2026-11-25: 2 løst av arkitekturen, 7 igjen, se nytt punkt)
-- [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — kjør bmad-create-epics-and-stories fra PRD + UX + ARCHITECTURE-SPINE.md, i P1/P2/P3-rekkefølge
+- [x] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — kjør bmad-create-epics-and-stories fra PRD + UX + ARCHITECTURE-SPINE.md, i P1/P2/P3-rekkefølge (løst 2026-11-26: 8 epics, 63 stories, se [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md))
 - [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — uke 1-spike i tillegg: fps og varighet for iPhone slow-motion-eksport, python:3.14-slim + libegl1/libgles2, arm64-hjul; oppdater AD-15 før opplastingsstoriene hvis slow-motion feiler
 - [x] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — oppdater UX (EXPERIENCE.md) etter arkitekturen: fps først etter serveravlesning, sletting av under analyse (409), «playback not ready», kun høyrehendte i filmeguide/registrering; legg «kun høyrehendte» i PRD §2.2 (løst 2026-11-25)
 - [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — ta backup av EVAL_DATA_DIR (testklippene) utenfor laptopen når de er filmet
 - [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — avklar de 7 gjenstående Open Questions i EXPERIENCE.md (desktop-send, flere feil, udesignede tilstander, breakpoint, språk, mock-merke, tekstgodkjenning inkl. nye linjer)
+- [ ] 2026-11-26 [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md) — kjør bmad-sprint-planning (readiness-sjekk + sprint-status-fil)
+- [ ] 2026-11-26 [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md) — tidsplanrisiko: P1 er 48 stories (Epic 1–5) mot 2026-12-01; bruk PRD-ens kuttregel i sprint planning
+- [ ] 2026-11-26 [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md) — slett planning-artifacts/.working/stories/ (subagent-utkast, flettet inn i epics.md)
