@@ -24,10 +24,11 @@
 - [x] 2026-11-12 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — add the AI chat on the result page to the PRD (Update), grounded in the analysis per the FR-14 rules (decided 2026-11-24: chat is in the MVP) (løst 2026-11-25: FR-20, se [prd](995-2026-11-03-17-24-03-prd.md))
 - [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — choose a round 3 variation (or combination) and continue bmad-ux with DESIGN.md/EXPERIENCE.md (resolved 2026-11-24: variation 01, spines final)
 - [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — update the PRD for the automatic swing library and consent at sign-up (FR-18, §3, §6.1, SM-11), incl. the 50-clip limit (løst 2026-11-25: FR-1/18/19, §6.1, SM-11, se [prd](995-2026-11-03-17-24-03-prd.md))
-- [ ] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — resolve the 13 Open Questions in EXPERIENCE.md (incl. how deleting a clip affects its analysis)
-- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — oppdater UX (bmad-ux Update): «No verified fault found» uten observasjon, «clip deleted»-rad, observasjon ved siden av verifisert feil, slettebekreftelser
-- [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — UX-bibliotekrader viser «club» uten kilde i PRD: fjern fra UX eller legg til i PRD
+- [x] 2026-11-24 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — resolve the 13 Open Questions in EXPERIENCE.md (incl. how deleting a clip affects its analysis) (delvis løst 2026-11-25: 9 igjen, se nytt punkt)
+- [x] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — oppdater UX (bmad-ux Update): «No verified fault found» uten observasjon, «clip deleted»-rad, observasjon ved siden av verifisert feil, slettebekreftelser (løst 2026-11-25, se [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md))
+- [x] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — UX-bibliotekrader viser «club» uten kilde i PRD: fjern fra UX eller legg til i PRD (løst 2026-11-25: fjernet fra UX)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — beskriv tilstand for krasj/tidsavbrudd i analysen (arkitektur/UX)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — avgjør over the top vs sway på tuningsettet innen 2026-12-01 (P1-sjekkpunkt)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ7: velg ekstramåling som erstatter sway etter et eventuelt bytte (tuningsettet)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ2: velg språkmodell og kostnad per analyse og per chatspørsmål (arkitektur)
+- [ ] 2026-11-25 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — avklar de 9 gjenstående Open Questions i EXPERIENCE.md (tekstgodkjenning, mock-mode-merke, udesignede tilstander m.m.)
