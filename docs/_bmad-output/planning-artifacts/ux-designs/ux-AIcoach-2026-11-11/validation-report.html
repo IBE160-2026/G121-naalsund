@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<!--
+  UX Design Validation Report — skeleton template.
+
+  This file is a starter the synthesis pass fills in directly. There is no
+  substitution engine. The LLM:
+    1. Reads {doc_workspace}/review-rubric.md and every review-{slug}.md from
+       additional reviewers.
+    2. Copies this skeleton.
+    3. Replaces the placeholder content (everything between TEMPLATE markers)
+       with the consolidated review, preserving the structure and CSS.
+    4. Writes the result to {doc_workspace}/validation-report.html.
+    5. Writes a markdown twin to {doc_workspace}/validation-report.md.
+
+  Visual rules the LLM must preserve:
+    - The container width, the color tokens, the typography.
+    - One dimension = one collapsible <section class="dimension">.
+    - Verdict pill uses the verdict-* class matching its judgment.
+    - Severity badge uses the badge-sev-* class matching its level.
+    - Each extra reviewer (accessibility, adversarial, etc.) gets its own
+      collapsible section below the rubric dimensions.
+    - The footer always shows the artifact paths and timestamp.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UX Design Validation: AIcoach</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --muted: #78716c;
+
+    --verdict-strong: #16a34a;
+    --verdict-adequate: #65a30d;
+    --verdict-thin: #d97706;
+    --verdict-broken: #dc2626;
+
+    --sev-low: #64748b;
+    --sev-medium: #ca8a04;
+    --sev-high: #ea580c;
+    --sev-critical: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  header.report-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  .synthesis {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    font-size: 15.5px;
+  }
+  .synthesis p { margin: 0 0 10px; }
+  .synthesis p:last-child { margin-bottom: 0; }
+
+  .dimension-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .dim-card .dim-name { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .dim-card .dim-verdict { font-size: 14px; font-weight: 600; }
+
+  section.dimension, section.reviewer-section { margin-bottom: 14px; }
+  section.dimension details, section.reviewer-section details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  section summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section summary::-webkit-details-marker { display: none; }
+  section summary::before {
+    content: "▸";
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  section details[open] summary::before { transform: rotate(90deg); }
+  section summary h2 {
+    display: inline;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    flex: 1;
+  }
+  .verdict-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: white;
+  }
+  .verdict-strong { background: var(--verdict-strong); }
+  .verdict-adequate { background: var(--verdict-adequate); }
+  .verdict-thin { background: var(--verdict-thin); }
+  .verdict-broken { background: var(--verdict-broken); }
+
+  .dim-body { padding: 4px 20px 18px; }
+  .dim-judgment { color: var(--text); font-size: 14.5px; }
+  .dim-judgment p { margin: 0 0 10px; }
+
+  .findings-list { padding: 0 20px 4px; }
+  article.finding {
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  article.finding:first-child { border-top: none; }
+  article.finding header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .badge {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .badge-sev-low { background: rgba(100, 116, 139, 0.12); color: var(--sev-low); }
+  .badge-sev-medium { background: rgba(202, 138, 4, 0.14); color: var(--sev-medium); }
+  .badge-sev-high { background: rgba(234, 88, 12, 0.14); color: var(--sev-high); }
+  .badge-sev-critical { background: rgba(220, 38, 38, 0.14); color: var(--sev-critical); }
+  .finding-title { margin: 0; font-size: 15px; font-weight: 500; flex: 1; min-width: 200px; }
+  .finding-location { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--muted); }
+  .finding-note, .finding-fix { margin-top: 6px; font-size: 14px; }
+  .finding-fix strong { color: var(--muted); font-weight: 500; }
+
+  .reviewer-source {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  .mechanical {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .mechanical h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .mechanical ul { margin: 0; padding-left: 20px; }
+  .mechanical li { margin-bottom: 4px; color: var(--text); }
+
+  footer.report-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  footer .meta { display: flex; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header class="report-header">
+      <div class="title">
+        <h1>AIcoach — UX Design Validation Report</h1>
+        <div class="subtitle">D:/IBE160 Prog m KI/IBE160/AIcoach/G121-naalsund/docs/_bmad-output/planning-artifacts/ux-designs/ux-AIcoach-2026-11-11</div>
+      </div>
+    </header>
+    <div class="synthesis">
+      <p>The pair is a usable contract. Every token reference resolves, every color has a hex value, all six UJs have Key Flows with protagonists and climaxes, and the invented AI Coach Chat section commits the grounding and refusal rules well. Nothing is critical. The main risk is the 2026-11-24 swing-library decision, which was only partly carried through. DESIGN.md still specifies the save toggle and the "Save to swing library" button. The sign-up consent has no committed form. Superseded mockup copy, including a privacy claim on the landing page, is not overridden. Fix the five high findings before story-dev starts. They sit on the upload, result, sign-up and landing surfaces.</p>
+      <p>Finalize pass (2026-11-24): all 33 findings are fixed (5 high, 13 medium, 15 low; none critical). The save toggle and save button are gone from both spines and all five mockups. Sign-up has one unticked, required consent checkbox, and "Create account" stays disabled until it is ticked. The fps threshold follows FR-8, and evidence-idle passes AA at 4.82:1. Fixes that needed a product decision are tagged [ASSUMPTION] and collected in EXPERIENCE.md → Open Questions (13). Before stories are written, run the PRD Update for chat and for the automatic swing library with sign-up consent.</p>
+    </div>
+    <div class="dimension-summary">
+      <div class="dim-card">
+        <div class="dim-name">Flow coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">adequate → strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Token completeness</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">adequate → strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Component coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">thin → adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">State coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">adequate → strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Visual reference coverage</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">adequate → strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Bloat &amp; overspecification</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">adequate → adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Inheritance discipline</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">adequate → strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Shape fit</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">strong → strong</div>
+      </div>
+    </div>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>Flow coverage</h2>
+          <span class="verdict-pill verdict-strong">adequate → strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Checked UJ-1 to UJ-6 (PRD §2.3), FR-1 to FR-19 and the chat decision against EXPERIENCE.md → Key Flows: whether each has a Key Flow, a named protagonist, numbered steps, a <strong>Climax</strong> beat and a failure path. All six UJs map one to one, with verbatim names, and Flow 7 covers chat. Every flow has a protagonist and a climax.</p>
+            <p>After fixes: every UJ, plus chat and sign-up (new Flow 8), has a flow with a protagonist, a climax and a failure line where one applies. The fps threshold now follows FR-8.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">Flow 2 gives "Filmed at 30 fps" as a rejection reason (EXPERIENCE L199, also drawn in <code>mockups/05-other-pages.svg</code>).</h3>
+              <span class="finding-location">EXPERIENCE L199, also drawn in `mockups/05-other-pages.svg`</span>
+            </header>
+            <div class="finding-note">That contradicts FR-8's acceptance criterion (30 fps is the hard floor; clips at 30–119 fps are analysed with a warning) and the spine's own "Frame-rate warning (30–119 fps)" state (L134). A dev or test author will build the wrong threshold.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> change the reason to "Filmed at 24 fps" or to an FR-8 reason such as "too dark or blurred", and note that the mockup is superseded.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> reason is now "Filmed at 24 fps" (under FR-8's 30 fps floor) in Flow 2, with a note on PRD UJ-2; <code>mockups/05-other-pages.svg</code> and <code>mockups/01-landing.svg</code> edited to match; a Frame-rate warning state says 30–119 fps is analysed with a warning.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Flow 2 step 2 says "the clip-check step fails" (L198), but the Step log has five fixed steps with no clip-check step (L107, DESIGN L519).</h3>
+              <span class="finding-location">L198</span>
+            </header>
+            <div class="finding-note">How a rejection appears in the step log is undefined.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add a "Clip checks" step, or state which step fails and how the log ends on a rejection.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Step log gains a "stopped" state: the log stops at the step that found the problem, later rows stay pending <code>[ASSUMPTION]</code> (Step log in both spines, Rejection state, Flow 2 step 2; Open Question 4).</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Flow 5 step 5 says "Chat, if present in the build" (L226), which contradicts the MVP decision in AI Coach Chat (L246) and <code>.memlog.md</code>.</h3>
+              <span class="finding-location">L226</span>
+            </header>
+            <div class="finding-note">This is the only place the spines treat chat as optional.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> "Chat answers with fixed sample answers in mock mode."</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Flow 5 step 5 now: the examiner asks a question and chat answers with fixed sample answers in mock mode.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">No flow walks account creation with the new one-time library consent, which is the main reversal of FR-18.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note">Flow 5 step 2 covers it in one clause, and Flow 6 step 1 only refers back to it.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add beats to Flow 6 or a short flow: sign-up screen, consent text and its required action, then the failure path ("email in use").</div>
+            <div class="finding-fix"><strong>Fixed:</strong> added Flow 8 (sign-up, consent checkbox, disabled button, email-in-use failure); Flow 5 and Flow 6 point to it.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Flow 6's climax depends on stretch FR-17 (<code>[ASSUMPTION]</code>, L233).</h3>
+              <span class="finding-location">`[ASSUMPTION]`, L233</span>
+            </header>
+            <div class="finding-note">The MVP path ("he switches between the two") is a parenthetical, not a step.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> make the MVP version the climax step and mark side-by-side as the stretch variant.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> climax is now the MVP path (open both analyses and compare); side-by-side is a parenthetical stretch note.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Flows 3 and 7 (chat) have no failure line.</h3>
+              <span class="finding-location">"LLM unavailable" L140, "Network lost" L150</span>
+            </header>
+            <div class="finding-note">The states exist ("LLM unavailable" L140, "Network lost" L150), but the flows don't point to them.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add one "Failure:" line to Flow 7.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Failure lines added to Flow 3 (LLM unavailable) and Flow 7 (network lost, LLM unavailable).</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Copy drift: Flow 1 step 5 says "Got it.</h3>
+              <span class="finding-location">L130</span>
+            </header>
+            <div class="finding-note">A clean clip. Watching now." but Analysing state (L130) says "Got it — a clean down-the-line clip at 120 fps. Watching now."</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> use one string.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Flow 1 step 5 uses the Analysing state string "Got it — a clean down-the-line clip at 120 fps. Watching now."</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>Token completeness</h2>
+          <span class="verdict-pill verdict-strong">adequate → strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Extracted every YAML token: 29 colors, 34 typography, 9 rounded, 15 spacing and 38 components. Also extracted every <code>{path.to.token}</code> in the prose of both files: 56 distinct references in DESIGN.md and 1 in EXPERIENCE.md. All resolve, and every color has a hex value. Spot-checked the stated contrast ratios; all match within 0.1. Light-only is stated as an assumption (DESIGN Open Q 1), so dark pairs are not required yet.</p>
+            <p>After fixes: 79 distinct token references resolve, every type size in the Components prose has a token, evidence-idle passes at 4.82:1, and the overlays are tokens.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title"><code>evidence-idle</code> <code>#7A6F63</code> on <code>paper-2</code> <code>#EBE3D5</code> computes to <strong>3.85:1</strong>.</h3>
+              <span class="finding-location">EXPERIENCE L168</span>
+            </header>
+            <div class="finding-note">That fails AA text contrast, which the spine itself sets as the floor (EXPERIENCE L168). It is used for the pre-analysis "Evidence · 0" chip text (DESIGN L439, L505), and the combination is missing from the contrast list (L441).</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> darken it to about <code>#6A6056</code>, or use <code>ink-2</code> (5.45:1 on paper 2), and add the pair to the contrast list.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> <code>evidence-idle</code> darkened to <code>#6A6056</code> (4.82:1 on paper 2); pair added to the contrast table; new <code>evidence-chip-idle</code> component.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Many type styles in Components prose have no token: drop zone title Figtree 21/600 (L515), Also checked title 15.5px (L493), key frame name 13.5/600 (L499), disclosure row 14.5/600 (L533), rejection reason 13/600 (L525), filming step label 13/600 (L537), wordmark 24/34px (L479), quote mark 60/40px (L487).</h3>
+              <span class="finding-location">L515</span>
+            </header>
+            <div class="finding-note">Code will hard-code them.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add tokens such as <code>title-drop</code>, <code>label-sm</code> and <code>wordmark</code>, or map each to an existing token.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> added tokens <code>wordmark</code>, <code>wordmark-large</code>, <code>quote-mark(-mobile)</code>, <code>card-title-lg</code>, <code>card-title-sm</code>, <code>step-name</code>, <code>row-title</code>, <code>frame-label</code>, <code>label-strong</code>, <code>label-sm</code>; Components prose references them.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">The status chip token uses <code>{typography.meta}</code> (12.5/<strong>400</strong>, L307), but the prose says the word is 12.5/<strong>600</strong> (L535).</h3>
+              <span class="finding-location">12.5/**400**, L307</span>
+            </header>
+            <div class="finding-note">The input label is also 12.5/600 (L531) with no token.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add a <code>label-sm</code> 12.5/600 token and point <code>status-chip.typography</code> at it.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> <code>status-chip.typography</code> now <code>{typography.label-sm}</code> (12.5/600); <code>text-input.label</code> uses it too.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Typography tokens use <code>fontStyle</code> (L93, L98, L104), which is outside the spec's allowed keys.</h3>
+              <span class="finding-location">L93, L98, L104</span>
+            </header>
+            <div class="finding-note">Resolvers may drop it.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> keep it, but note it as an extension in Typography, or use a separate italic family name.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Typography section states <code>fontStyle</code> is an extension and names the fallback (load Newsreader Italic).</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Some raw values sit outside tokens: the bottom-sheet scrim <code>rgba(37,32,27,0.42)</code> (L417), the hero shadow "#25201B at 6%" (L469), the step log's "white check" and the ghost-body opacities.</h3>
+              <span class="finding-location">L417</span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add <code>scrim</code> and <code>shadow-hero</code> tokens.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> added <code>scrim</code> (#25201B6B), <code>shadow-hero</code> (#25201B0F) and <code>on-confidence</code> (step-log check); bottom sheet and Elevation reference them. Ghost-body opacities stay as key-frame construction values.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title"><code>ruler-track</code> on <code>evidence-tint</code> is 1.63:1, and no ratio is stated for it.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note">The meaning is carried by the teal fill, the tick and the labels, so this is acceptable.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> state that the track is decorative.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Colors states the ruler track (1.6:1) and hairline are decorative and carry no state.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>Component coverage</h2>
+          <span class="verdict-pill verdict-adequate">thin → adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Extracted every component name across the YAML keys, DESIGN → Components headings and EXPERIENCE → Component Patterns rows (≈45 names). Core result components (verdict, chain, exercise, evidence, composer, confidence band) are covered on both sides with real rules. The gaps cluster on the surfaces the 2026-11-24 decision changed and on states that were never mocked.</p>
+            <p>After fixes: every component has one name and a row in both spines, and the save UI is gone. It stays adequate because Clip detail, the Evidence drawer, the upload progress bar and the mock-mode label are specified only in the spines, as [ASSUMPTION], with no mockup.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">DESIGN still specifies the removed save UI.</h3>
+              <span class="finding-location">DESIGN L515</span>
+            </header>
+            <div class="finding-note">The Upload drop zone anatomy ends with "then the save toggle with its consent text" (DESIGN L515). Buttons → Quiet = "Save to swing library" in the result header (L529). EXPERIENCE replaces that button with an "In your swing library" status line (L106), which has no visual spec.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> remove the toggle from the drop zone anatomy and reassign or remove <code>button-quiet</code>. Add a DESIGN row for the "In your swing library" status line.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> toggle removed from Drop zone anatomy (replaced by a library note); <code>button-quiet</code> and the Quiet button removed; new <code>library-status</code> component and "Library status" rows in both spines; <code>mockups/02</code>, <code>03</code>, <code>04</code> edited to match.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">"Library consent" (EXPERIENCE L105) has no DESIGN row.</h3>
+              <span class="finding-location">EXPERIENCE L105</span>
+            </header>
+            <div class="finding-note">It also doesn't commit whether consent is a required checkbox that enables "Create account" or a passive statement. PRD §6.1 requires <em>explicit</em> consent, so this decides the form logic and the legal posture. Bottom sheet (L115) and Interaction Primitives (L160) still list "consent" as a sheet.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> commit the form (for example, a required checkbox with the stated text, so "Create account" stays disabled until it is ticked). Add a DESIGN row, and remove "consent" from both sheet lists.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> committed an unticked, required Consent checkbox that keeps "Create account" disabled until ticked: <code>consent-checkbox</code> and <code>button-primary-disabled</code> tokens, DESIGN row, EXPERIENCE row, "Consent not ticked" state, Flow 8; "consent" removed from the Bottom sheet row and Interaction Primitives; checkbox drawn in <code>mockups/05-other-pages.svg</code>.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Several behavioural surfaces and states have no visual spec: Saved clip detail (video player, "Open analysis", "Delete clip"), the phone "Ready to send" clip preview (L128), the upload-progress bubble (L129), the narrow-laptop Evidence <strong>drawer</strong> and its page-header "Evidence · n" chip (L277; DESIGN only specifies the phone chip), the frame-rate warning (L134), the mock-mode label (L141) and the "taking longer" line with "Try again" (L131).</h3>
+              <span class="finding-location">L128</span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add short DESIGN rows, or map each one explicitly to an existing component (Inline message, Bottom sheet, Evidence chip).</div>
+            <div class="finding-fix"><strong>Fixed:</strong> DESIGN rows added for Clip detail, Ready-to-send preview, upload progress (Player message), Evidence drawer + header Evidence chip, frame-rate warning and "taking longer" (Inline message), Mock-mode label; new ones marked <code>[ASSUMPTION]</code>.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Component names drift between the files.</h3>
+              <span class="finding-location">L117, also used in chat</span>
+            </header>
+            <div class="finding-note">DESIGN "Upload drop zone" vs EXPERIENCE "Drop zone". DESIGN "Inputs and list rows" vs "Text input" and "List row". YAML <code>unverified-card</code> vs "Unverified observation card". <code>measurement-card-cited</code> and <code>evidence-placeholder</code> have no EXPERIENCE row. "Typing indicator" is an EXPERIENCE row (L117, also used in chat) but appears in DESIGN only inside Step log.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> use one canonical name per component across the YAML key, the DESIGN heading and the EXPERIENCE row.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> one canonical name per component across YAML key, DESIGN heading and EXPERIENCE row (Drop zone, Text input, List row, Unverified observation card / <code>unverified-observation-card</code>, Measurement card / <code>measurement-card</code>, Evidence placeholder, Typing indicator).</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">The DESIGN "Save toggle" row (L517) and the <code>toggle</code> / <code>toggle-off</code> / <code>toggle-knob</code> tokens are kept "in case".</h3>
+              <span class="finding-location">L517</span>
+            </header>
+            <div class="finding-note">That is dead spec, and a consumer may build it anyway.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> delete them, and DESIGN Open Q 2 with them.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Save toggle row, <code>toggle</code> component, <code>toggle-off</code>/<code>toggle-knob</code> tokens and the toggle Open Question deleted.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>State coverage</h2>
+          <span class="verdict-pill verdict-strong">adequate → strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Walked all 14 IA surfaces against the states that apply to each: empty, cold-load, error, offline, permission-denied and focus. Covered well: upload refusal, uploading, analysing, timeout, rejection, no verified fault, low confidence, LLM unavailable, mock mode, empty library and account, not found or not yours, network lost, deleting, storage limit, and focus.</p>
+            <p>After fixes: cold load, medium confidence, consent not ticked, both delete directions, desktop send-on-drop, the signed-out guide and the return URL are covered.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">No cold-load or loading state for opening an existing thread (from the rail or library), the swing library, the account page or the saved clip detail.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add one row, for example "content loads behind dashed placeholders; no spinners", which reuses the existing dashed = not-yet-there language.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> added "Cold load" state: dashed placeholders in the final layout, no spinners, inline load-failure line <code>[ASSUMPTION]</code>.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">The automatic library leaves clip and analysis deletion uncoupled.</h3>
+              <span class="finding-location">L214</span>
+            </header>
+            <div class="finding-note">Flow 4 deletes the analysis "9 Nov · Cannot analyse" (L214), but it is not said whether its clip stays. Flow 6 asks "Keep its analysis?" when a clip is deleted (L234). The library row for a rejected clip ("Cannot analyse", shown in <code>mockups/05</code>) isn't specified in IA (L41 says "main finding"). Account rows in <code>mockups/05</code> still show "clip saved / no clip kept".</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> commit both directions of the delete coupling and the row content for rejected clips, and drop the clip-status line from account rows.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> committed both directions as <code>[ASSUMPTION]</code> (Deleting an analysis keeps the clip; Deleting a clip offers keep/delete analysis per FR-19), library and account row content incl. rejections; Open Question 3. Account rows in <code>mockups/05</code> now read "clip in swing library".</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">Desktop has no pre-send state.</h3>
+              <span class="finding-location">L128</span>
+            </header>
+            <div class="finding-note">The phone has "Ready to send" (L128). The desktop Drop zone says "dropping a second replaces the first before sending" (L104), which implies a pending state that isn't specified.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add a desktop ready-to-send row, or state that dropping a clip sends it.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Drop zone: on desktop a valid clip sends at once <code>[ASSUMPTION]</code>; the "replaces the first" clause removed; Open Question 5.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Chat history is contradictory.</h3>
+              <span class="finding-location">L270</span>
+            </header>
+            <div class="finding-note">AI Coach Chat assumes the conversation is stored with the analysis (L270), but Open Q 1 (L294) lists "whether chat history is stored" as open. What a revisited thread shows depends on this.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> pick one.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> picked: stored with the analysis, shown on reopen, deleted with it <code>[ASSUMPTION]</code>; removed from Open Questions.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">There is no result state row for medium confidence (only high L132 and low L133), although wording exists at L71 and over the top is capped at medium.</h3>
+              <span class="finding-location">only high L132 and low L133</span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add the row.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> added "Result: medium confidence" row.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">The public filming guide has no signed-out header or navigation defined, and the return-to-URL after sign-in from a protected link is unstated (L50, L32).</h3>
+              <span class="finding-location">L50, L32</span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add one line each.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Protection paragraph: signed-out guide uses the landing header; sign in returns to the requested URL <code>[ASSUMPTION]</code>.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>Visual reference coverage</h2>
+          <span class="verdict-pill verdict-strong">adequate → strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>The five files in <code>mockups/</code> are all linked inline in EXPERIENCE → IA, one per surface (L31–L44), and listed in DESIGN → Brand &amp; Style (L427). There are no orphans. "Spine wins on conflict" is stated in each file (DESIGN L427, EXPERIENCE L25). <code>imports/</code> holds the user's brief, which isn't a visual, and there is no <code>wireframes/</code> folder.</p>
+            <p>After fixes: the mockups now match the decisions, every mockup is linked per component group and per surface, and precedence is stated once (DESIGN → Brand &amp; Style).</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">high</span>
+              <h3 class="finding-title">Superseded mockup copy is only partly overridden.</h3>
+              <span class="finding-location">L36</span>
+            </header>
+            <div class="finding-note">The spine flags the toggle (L36) and rewrites the rejection footer (L139) and the delete-account sheet (L215). But <code>mockups/01-landing.svg</code> still says "Your clips are private. <strong>Unsaved clips are deleted after analysis.</strong>", which is a privacy claim that is now false. DESIGN → Landing blocks (L545) gives no replacement. <code>mockups/05-other-pages.svg</code> still has "5 saved swings", "clip saved / no clip kept" and "Nothing was saved."</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add a "Superseded mockup copy" list (string → replacement) in EXPERIENCE, including the landing privacy line.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> edited the mockups instead of listing overrides: landing privacy line and "Not kept unless you ask"; toggles and "keep it" copy in 02/03; "not saved" echo; "Save to swing library" button in 04; "Nothing was saved", "5 saved swings", "clip saved / no clip kept", "saved clip(s)" in 05. All SVGs well-formed and rendered without overlaps.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">DESIGN → Components cites no mockup per component; there is only the blanket list at L427, plus <code>04</code> in Colors.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note">A consumer can't tell which file draws, say, the step log (02 desktop vs 03 phone) or the filming guide step.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> add a "→ <code>mockups/0x</code>" pointer to each component or component group.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Components grouped (Identity and conversation, Result, Evidence, Upload and analysis, Forms/lists/navigation, Landing), each with a → <code>mockups/0x</code> pointer; Layout table names the mockup per frame.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>Bloat &amp; overspecification</h2>
+          <span class="verdict-pill verdict-adequate">adequate → adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>DESIGN.md has 568 lines and EXPERIENCE.md has 305, several times the length of the examples. Most of the length is load-bearing, such as the key-frame construction and the grounding rules.</p>
+            <p>After fixes: prose references tokens, the lineage is told once, and the toggle dead weight is deleted. It stays adequate because DESIGN.md is still long: the key-frame construction and the component anatomy are load-bearing.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">DESIGN Components prose restates YAML values as pixels next to the tokens: composer 56px, bars 4 × 11 / 2px, pin 18px, buttons 52/56px.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note">Two sources for the same value drift, and the status chip weight already has.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> make the prose reference tokens and keep pixel values in the YAML only.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Components prose now references tokens; pixel values kept in YAML only (construction details without tokens remain).</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Dead weight from the removed toggle: the Save toggle row, the toggle tokens and DESIGN Open Q 2.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> delete them.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> deleted with the toggle row, tokens and Open Question.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">The concept lineage (06 / 09 / 02) is told twice, in DESIGN Brand &amp; Style (L425) and EXPERIENCE Inspiration (L287).</h3>
+              <span class="finding-location">L425</span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> keep it in Inspiration, and keep only the posture sentence in Brand &amp; Style.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> lineage kept only in EXPERIENCE → Inspiration &amp; Anti-patterns; Brand &amp; Style keeps the posture and points there.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>Inheritance discipline</h2>
+          <span class="verdict-pill verdict-strong">adequate → strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Sources resolve: <code>docs/prd/prd.md</code>, <code>tilbakemelding-prd.md</code>, <code>.memlog.md</code>, <code>decisions.md</code> and <code>.working/round3/01-faithful-merge/concept.md</code> all exist. UJ names match PRD §2.3 verbatim. The one EXPERIENCE token reference, <code>{colors.evidence-teal}</code>, resolves. The chat and FR-18 PRD conflicts are logged consistently, with the one exception of Flow 5 (see §1).</p>
+            <p>After fixes: swing library is redefined once in Foundation, the post-PRD decisions are listed in one table, and names match across files. The PRD conflicts are logged, not resolved: the PRD Update is still pending.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">medium</span>
+              <h3 class="finding-title">EXPERIENCE says glossary terms are used verbatim (L23).</h3>
+              <span class="finding-location">L23</span>
+            </header>
+            <div class="finding-note">But the PRD §3 definition of <strong>swing library</strong> ("saved swing clips… unsaved swing clips are deleted after analysis") no longer holds, and the spine doesn't restate the new meaning. Terms like "Saved clip detail" (L42) and "saved" carry the old model forward.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> state the redefined term once in Foundation and rename the surface to "Clip detail".</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Foundation redefines <strong>swing library</strong> once and lists the post-PRD decisions; "Saved clip detail" renamed "Clip detail"; "saved" banned from UI copy.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Component names differ across sections and files (see §3, finding 4).</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> </div>
+            <div class="finding-fix"><strong>Fixed:</strong> fixed with §3 finding 4.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>Shape fit</h2>
+          <span class="verdict-pill verdict-strong">strong → strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>DESIGN sections follow the canonical order (Brand &amp; Style → Colors → Typography → Layout &amp; Spacing → Elevation &amp; Depth → Shapes → Components → Do's and Don'ts), with Open Questions appended. EXPERIENCE has every required default. The required-when-applicable sections are present: Responsive &amp; Platform for the multi-surface layout, and Inspiration &amp; Anti-patterns for the concept rejects. The invented "AI Coach Chat" section earns its place as the UX contract for a feature the PRD doesn't cover yet.</p>
+            <p>Still strong. Key Flows now come last, and Open Questions are split into visual and product lists with no overlap.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">EXPERIENCE puts Key Flows before AI Coach Chat, Responsive and Inspiration.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note">The examples end on Key Flows.</div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> optionally move Key Flows last. Flow 7 then reads after the chat contract it relies on.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> Key Flows moved last before Open Questions.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">low</span>
+              <h3 class="finding-title">Each file has its own Open Questions list, with overlap: dark mode appears in both.</h3>
+              <span class="finding-location"></span>
+            </header>
+            <div class="finding-note"></div>
+            <div class="finding-fix"><strong>Suggested fix:</strong> keep cross-cutting questions in one file and point to it from the other.</div>
+            <div class="finding-fix"><strong>Fixed:</strong> visual questions only in DESIGN, product/behaviour only in EXPERIENCE, each pointing to the other; dark mode appears once.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+    <div class="mechanical">
+      <h3>Mechanical notes</h3>
+      <ul>
+        <li>Residual (low, pre-existing, not a finding): when Newsreader is not installed and Georgia substitutes, the mockups render "Coach" touching its timestamp. This is font fallback only.</li>
+        <li>Residual (low): the analysing panel in <code>mockups/03-upload-mobile.svg</code> still says "Got it. A clean clip. Watching now.", and <code>mockups/02-upload.svg</code> draws the drop-zone title at 19px instead of <code>card-title-lg</code> 21px. The spine wins.</li>
+        <li>Token references: 79 distinct, all resolve (both files). Removed: <code>toggle-off</code>, <code>toggle-knob</code>, <code>toggle</code>, <code>button-quiet</code>. Added: <code>scrim</code>, <code>shadow-hero</code>, <code>on-confidence</code>, ten type tokens, <code>button-primary-disabled</code>, <code>evidence-chip-idle</code>, <code>library-status</code>, <code>consent-checkbox</code>.</li>
+        <li>Mockup edits: copy changes, plus the consent checkbox and disabled button in 05. All five SVGs parse as well-formed XML and were rendered in headless Chrome to check for overlaps.</li>
+        <li>Frontmatter: both spines have <code>status: final</code> and <code>updated: 2026-11-24</code>.</li>
+      </ul>
+    </div>
+    <footer class="report-footer">
+      <div class="meta">
+        <span>Rubric: D:/IBE160 Prog m KI/IBE160/AIcoach/G121-naalsund/docs/_bmad-output/planning-artifacts/ux-designs/ux-AIcoach-2026-11-11/review-rubric.md</span>
+        <span>Generated: 2026-11-24T20:45</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

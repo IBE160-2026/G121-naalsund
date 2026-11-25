@@ -1,0 +1,134 @@
+<title>{{TITLE}}</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="{{FONTLINK}}">
+<style>
+/* Layout: a quiet review room. Sticky control bar (view mode + concept index), one wide column of framed boards; the concepts carry all the colour. */
+:root{
+  --bg:#eef0ee; --panel:#f8f9f8; --ink:#16201b; --muted:#5b6660; --line:#d3d8d4;
+  --accent:#1f5c43; --board:#ffffff;
+  --f-ui:"Geist", ui-sans-serif, system-ui, sans-serif;
+  --f-mono:"Geist Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121614; --panel:#1a201d; --ink:#e7ece9; --muted:#9aa59f; --line:#2c3531; --accent:#7fc4a2; --board:#0d100e; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121614; --panel:#1a201d; --ink:#e7ece9; --muted:#9aa59f; --line:#2c3531; --accent:#7fc4a2; --board:#0d100e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-ui)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+.wrap{max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.intro{padding-block:40px 24px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.06em;color:var(--muted)}
+h1{font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.02em;margin:.35em 0 .3em;font-weight:600;text-wrap:balance}
+.intro p{max-width:72ch;color:var(--muted);margin:0 0 .6em}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border-block:1px solid var(--line)}
+.bar .wrap{display:flex;flex-direction:column;gap:10px;padding-block:10px}
+.modes{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button,.ptab{font:500 13px var(--f-ui);background:transparent;color:var(--ink);border:0;padding:7px 12px;cursor:pointer}
+.seg button[aria-pressed="true"],.ptab[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.ptabs{display:flex;flex-wrap:wrap;gap:4px}
+.ptab{border:1px solid var(--line);border-radius:8px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.chip{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;text-decoration:none;color:var(--ink);font-size:13px;white-space:nowrap}
+.chip b{font:500 12px var(--f-mono);color:var(--muted)}
+.chip[aria-current="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.sw{display:inline-flex;gap:2px}
+.sw i{display:block;width:10px;height:10px;border-radius:2px;box-shadow:inset 0 0 0 1px rgba(127,127,127,.35)}
+.sw.big i{width:22px;height:22px;border-radius:4px}
+main{padding-block:28px 80px}
+.concept{display:flex;flex-direction:column;gap:20px}
+.ch{display:flex;gap:20px;align-items:flex-start}
+.num{font:500 56px/0.9 var(--f-mono);color:var(--muted);letter-spacing:-.04em}
+.ch h2{margin:0;font-size:clamp(24px,3vw,34px);letter-spacing:-.015em;font-weight:600}
+.tag{margin:.2em 0 .7em;color:var(--muted);max-width:70ch}
+.why{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+.why summary{cursor:pointer;font:500 13px var(--f-ui);color:var(--muted)}
+.md{columns:2 340px;column-gap:40px;padding-top:6px}
+.md h4{font-size:14px;margin:1.1em 0 .3em;break-after:avoid;color:var(--accent)}
+.md p,.md ul{margin:.3em 0;max-width:70ch}
+.md ul{padding-left:1.1em}
+.md code{font:12.5px var(--f-mono)}
+.md .row{display:flex;gap:10px;font-size:13px;break-inside:avoid}.md .row span{min-width:0}
+.shots{display:flex;flex-direction:column;gap:28px}
+.shot{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.shot figcaption{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pl{font-weight:600}
+.cn{font:12px var(--f-mono);color:var(--muted)}
+.zoom{margin-left:auto;font:500 12px var(--f-ui);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}
+.zoom[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.frame{background:var(--board);border:1px solid var(--line);border-radius:8px;overflow:auto}
+.frame svg{display:block;width:100%;height:auto}
+.shot.actual .frame{max-height:85vh}
+.shot.actual .frame svg{width:var(--nat)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#pageview{display:flex;flex-direction:column;gap:36px}
+@media (max-width:640px){.num{font-size:36px}.ch{gap:12px}}
+</style>
+
+<div class="wrap intro">
+  <div class="eyebrow">AIcoach UX exploration</div>
+  <h1>{{TITLE}}</h1>
+  {{INTRO}}
+</div>
+
+<div class="bar"><div class="wrap">
+  <div class="modes">
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="m-concept" aria-pressed="true">By concept</button>
+      <button type="button" id="m-page" aria-pressed="false">By page</button>
+    </div>
+    <div class="ptabs" id="ptabs" hidden>{{PAGETABS}}</div>
+  </div>
+  <nav class="chips" id="chips" aria-label="Concepts">{{NAV}}</nav>
+</div></div>
+
+<main class="wrap">
+  <div id="conceptview">{{SECTIONS}}</div>
+  <div id="pageview" hidden></div>
+</main>
+
+<script>
+(function(){
+  const sections=[...document.querySelectorAll('.concept')];
+  const chips=[...document.querySelectorAll('.chip')];
+  const shots=[...document.querySelectorAll('.shot')];
+  const home=new Map(shots.map(s=>[s,s.parentElement]));
+  const cv=document.getElementById('conceptview'), pv=document.getElementById('pageview');
+  const ptabs=document.getElementById('ptabs'), chipsNav=document.getElementById('chips');
+  const mC=document.getElementById('m-concept'), mP=document.getElementById('m-page');
+  shots.forEach(s=>{const svg=s.querySelector('svg'); if(svg) s.style.setProperty('--nat',(svg.dataset.w||1440)+'px');});
+  document.addEventListener('click',e=>{const b=e.target.closest('.zoom'); if(!b) return;
+    const on=b.getAttribute('aria-pressed')!=='true'; b.setAttribute('aria-pressed',on); b.closest('.shot').classList.toggle('actual',on);});
+  function restore(){shots.forEach(s=>home.get(s).appendChild(s));}
+  function showConcept(id){
+    restore(); pv.hidden=true; cv.hidden=false; ptabs.hidden=true; chipsNav.hidden=false;
+    mC.setAttribute('aria-pressed','true'); mP.setAttribute('aria-pressed','false');
+    if(!sections.some(s=>s.dataset.c===id)) id=sections[0]&&sections[0].dataset.c;
+    sections.forEach(s=>s.hidden=s.dataset.c!==id);
+    chips.forEach(c=>c.setAttribute('aria-current',c.dataset.c===id));
+    try{localStorage.setItem('aic-last',id)}catch(e){}
+  }
+  function showPage(p){
+    restore(); cv.hidden=true; pv.hidden=false; ptabs.hidden=false; chipsNav.hidden=true;
+    mC.setAttribute('aria-pressed','false'); mP.setAttribute('aria-pressed','true');
+    const tabs=[...ptabs.querySelectorAll('.ptab')];
+    if(!tabs.some(t=>t.dataset.p===p)) p='landing';
+    tabs.forEach(t=>t.setAttribute('aria-pressed',t.dataset.p===p));
+    shots.filter(s=>s.dataset.p===p).forEach(s=>pv.appendChild(s));
+  }
+  function route(){
+    const h=location.hash.slice(1);
+    if(h.startsWith('page-')) return showPage(h.slice(5));
+    if(/^c\d\d$/.test(h)) return showConcept(h.slice(1));
+    let last=null; try{last=localStorage.getItem('aic-last')}catch(e){}
+    showConcept(last||'01');
+  }
+  mC.onclick=()=>{location.hash='c'+(chips.find(c=>c.getAttribute('aria-current')==='true')||chips[0]).dataset.c};
+  mP.onclick=()=>{location.hash='page-landing'};
+  ptabs.addEventListener('click',e=>{const t=e.target.closest('.ptab'); if(t) location.hash='page-'+t.dataset.p;});
+  window.addEventListener('hashchange',()=>{route(); window.scrollTo(0,0);});
+  route();
+})();
+</script>
