@@ -3,7 +3,7 @@ title: AIcoach Experience
 name: AIcoach
 status: final
 created: 2026-11-11
-updated: 2026-11-24
+updated: 2026-11-25
 sources:
   - ../../../../prd/prd.md
   - ../../../../prd/tilbakemelding-prd.md
@@ -20,15 +20,16 @@ A single-surface **responsive web app** (PRD §7: no native app) used in two rea
 
 No UI kit is named in the PRD, and no architecture document exists yet. `[ASSUMPTION]` no component library; components are built to `DESIGN.md`, which holds the visual spec. This spine holds the behaviour. If architecture picks a library, it inherits these specs as a brand layer.
 
-**Decisions after the PRD (2026-11-24) that this spine applies everywhere:**
+**Decisions made in UX (2026-11-24) and adopted by the PRD revision of 2026-11-25:**
 
-| Decision | Replaces in the PRD |
+| Decision | PRD (2026-11-25) |
 |---|---|
-| The AI coach chat is in the MVP (see AI Coach Chat). | §7 non-goal, §8.2 / §9 next phase |
-| Every uploaded swing clip, including rejected ones, goes into the swing library automatically and stays until the player deletes it. | FR-18 opt-in per clip, §6.1 retention |
-| One consent, given at sign-up through a required checkbox. No save toggle or save button anywhere. | FR-18 per-clip consent; §6.1 explicit consent is kept, moved to sign-up |
+| The AI coach chat is in the MVP (see AI Coach Chat). It is P2: if it is cut at a checkpoint, the composer, suggested prompts and grounding note are hidden and the result is otherwise unchanged. | §4.9 FR-20, §8.1 |
+| Every uploaded swing clip, including rejected ones, goes into the swing library automatically and stays until the player deletes it. At most 50 swing clips per player. | FR-18, FR-19, §6.1 |
+| One required checkbox at sign-up, an acknowledgement (legal basis: the service agreement). No save toggle or save button anywhere. | FR-1, §3 library consent, §6.1 |
+| The unverified observation is built from a closed list of extra measurements and appears only when one passes its threshold; a result can have none. | FR-13 |
 
-**Glossary.** Terms from PRD §3 are used verbatim in UI copy and here: player, swing clip, swing library, down the line, filming guide, analysis, result, rejection, swing event, key frame, measurement, confidence band, rule table, verified fault, possible fault, unverified observation, fault chain, feel cue, drill, mobility exercise, explanation, mock mode. One term is redefined: **swing library** = every swing clip the player has sent, each linked to its analysis (result or rejection), kept until the player deletes it. "Saved" is not used in UI copy.
+**Glossary.** Terms from PRD §3 are used verbatim in UI copy and here: player, swing clip, swing library, down the line, filming guide, analysis, result, rejection, swing event, key frame, measurement, confidence band, rule table, verified fault, possible fault, extra measurement, unverified observation, fault chain, feel cue, drill, mobility exercise, explanation, mock mode. One term is redefined: **swing library** = every swing clip the player has sent, each linked to its analysis (result or rejection), kept until the player deletes it. "Saved" is not used in UI copy.
 
 **Visual references** are the five files in `mockups/` (round 3 variation 01 "Faithful Merge"), linked per surface in the IA table below. Their precedence is set once, in DESIGN.md → Brand & Style.
 
@@ -45,15 +46,15 @@ No UI kit is named in the PRD, and no architecture document exists yet. `[ASSUMP
 | Analysing | Sending a clip (same thread, same URL) | Step log streams in; Evidence pins fill | FR-5, FR-6 | `mockups/02-upload.svg`, `mockups/03-upload-mobile.svg` |
 | Result thread | End of analysing; rail swing row; swing library row | Verdict, feel cue, fault chain, practice, Also checked, chat; Evidence panel | FR-7, FR-9–FR-14 | `mockups/04-result.svg`, `mockups/03-upload-mobile.svg` |
 | Rejection ("Cannot analyse") | End of analysing | Reasons, each linked to its guide step; Film again | FR-8 | `mockups/05-other-pages.svg` |
-| No verified fault found | End of analysing | The answer, what was checked, one unverified observation, no drill | FR-12, FR-13 | `mockups/05-other-pages.svg` |
-| Swing library | Rail / menu; library status on a result | Every swing clip, newest first: date, club, main finding ("Cannot analyse" for a rejection) | FR-19 | `mockups/05-other-pages.svg` |
+| No verified fault found | End of analysing | The answer, what was checked, at most one unverified observation, no drill | FR-12, FR-13 | `mockups/05-other-pages.svg` |
+| Swing library | Rail / menu; library status on a result | Every swing clip, newest first: date and main finding ("Cannot analyse" for a rejection; "clip deleted" for a kept analysis) | FR-19 | `mockups/05-other-pages.svg` |
 | Clip detail | Swing library row; library status | Play the clip, open its analysis, delete the clip | FR-19 | spine only `[ASSUMPTION]` |
 | Account | Rail / menu | Email, your analyses (delete one), sign out, delete account | FR-3 | `mockups/05-other-pages.svg` |
 | Delete account (sheet) | Account → Delete account | Plain consequences, one clear choice | FR-3 | `mockups/05-other-pages.svg` |
 
 **Navigation.** Signed in, desktop: a persistent left rail (wordmark, "New swing", recent swings, then Swing library · Filming guide · Account). Phone: the same rail opens as a sheet from the ≡ menu in the top bar; sub-pages show a back chevron instead. Landing has its own header (How it works · When it says no · Sign in · Create account). Sheets stack one level deep, never two.
 
-**One thread per swing.** Upload, analysing and the outcome (result, rejection or no verified fault) live in one thread at one URL. The rail's "Swings" list shows the most recent threads with their main finding. `[ASSUMPTION]` the rail shows the latest 3–5; the full list lives under Account → "See all n analyses". This overlaps the stretch FR-16 (Open Question 6).
+**One thread per swing.** Upload, analysing and the outcome (result, rejection or no verified fault) live in one thread at one URL. The rail's "Swings" list shows the most recent threads with their main finding. `[ASSUMPTION]` the rail shows the latest 3–5. In P1 the full list is the swing library (FR-19), which also keeps a "clip deleted" row for an analysis whose clip was deleted. Account → "See all n analyses" is the stretch analysis history (FR-16) and is hidden until FR-16 is built.
 
 **Protection.** Upload, threads, swing library, clip detail and account require sign in (FR-1). A protected URL opened while signed out goes to Sign in and, after sign in, back to that URL `[ASSUMPTION]`. Another player's analysis or clip URL shows a plain "not found" page (FR-2). `[ASSUMPTION]` the filming guide is public, since the landing links to it; signed out, it uses the landing header.
 
@@ -69,7 +70,7 @@ Brand voice lives in `DESIGN.md` → Brand & Style; this section is microcopy. T
 | "I won't guess from this clip. Three things got in the way:" | "Error: upload failed validation." |
 | "None of my three rules fired. That's a real answer, so I won't invent a drill." | "Great swing! No problems!" |
 | "I didn't measure your grip in this clip, so I can't tell you." | Any answer about something not in the analysis |
-| "I agree that every swing clip I send is stored in my swing library on the AIcoach server until I delete it." | "We may retain your data to improve our services." |
+| "I understand that every swing clip I send is stored in my swing library on the AIcoach server until I delete it." | "We may retain your data to improve our services." |
 | "This removes 9 analyses with their results and key frames, and 9 swing clips. It cannot be undone." | "Are you sure?" with no consequences |
 | Measured values with units and a pin: `7% of body height [3]` | A number in the coach's prose without a pin |
 | "Unverified — confirm with a coach" exactly | Softening it to "might be worth looking at" |
@@ -92,16 +93,16 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Player message | Thread | Echo of the player's question or uploaded clip, right-aligned. The upload echo shows file name, length and fps, and upload progress while uploading. |
 | Collapsed system line | Thread top after analysis | Folds the upload exchange and the checklist into one line; "Show" expands it in place, "Hide" folds it again. |
 | Typing indicator | Analysing, chat | Shown while the coach is working; removed when the message arrives. Not announced repeatedly to screen readers. |
-| Composer | Result thread | Enabled only once a result exists. Enter sends; Shift+Enter adds a line. Sending disables it until the answer arrives. Empty input cannot be sent. Hidden on a rejection `[ASSUMPTION]`. |
+| Composer | Result thread | Enabled only once a result exists. Enter sends; Shift+Enter adds a line. Sending disables it until the answer arrives. Empty input cannot be sent. Hidden on a rejection (FR-20). |
 | Grounding note | Under every composer | Always visible, never dismissible. |
 | Suggested prompt | Above the composer | Three on desktop, one on the phone. Tapping sends the prompt as the player's message. Refreshed after each answer `[ASSUMPTION]`. |
-| "Based on" footnote | Under every grounded coach answer | Lists the pins and items the answer used; each pin is a citation link. A refusal shows what it checked ("unverified observation (confidence: low) · rule table"). |
+| "Based on" footnote | Under every grounded coach answer | Lists the pins and items the answer used; each pin is a citation link. A refusal shows what it checked ("unverified observation (confidence: low) · rule table"). At most 80 words per answer (FR-20). |
 
 ### Result
 
 | Component | Use | Behavioural rules |
 |---|---|---|
-| Library status | Result and rejection header | "In your swing library" links to the clip detail. It is a status, not an action: there is no save or unsave. If the clip has been deleted it reads "Clip deleted" and is not a link `[ASSUMPTION]`. |
+| Library status | Result and rejection header | "In your swing library" links to the clip detail. It is a status, not an action: there is no save or unsave. If the clip has been deleted it reads "Clip deleted" and is not a link (FR-19). |
 | Jump-to chips | Result thread header | Each chip scrolls the thread to its section (Verdict · Why · Practise · Also checked · Ask the coach). The active chip follows scroll position. "Ask the coach" focuses the composer. |
 | Verdict card | Result | Always first. Shows the verified fault, its confidence band and the one measurement that decided it. Activating the pin or value cites it in the Evidence panel. With more than one verified fault `[ASSUMPTION]`: one verdict card per fault, highest confidence first. |
 | Feel cue | Result | Exactly one per verified fault (FR-14). The "[2]" link cites the impact key frame. |
@@ -111,7 +112,7 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Also checked | Result | Lists every other rule-table fault as "possible" or "not found", each with band and pin. A possible fault shows its measurement and "No drill." (PRD glossary). Always visible on desktop; on the phone one tap below practice `[ASSUMPTION]`. |
 | Status chip | Also checked, library | Text label only ("possible", "not found"); never a colour-only state. |
 | Confidence band | Every measurement and verified fault | Never omitted (FR-7). Clips under 120 fps never show "high". Over the top never shows above "medium". |
-| Unverified observation card | No verified fault found | At most one per result; exactly one when no verified fault is found (FR-13). Always "confidence: low", never a drill. Never appears next to a verified fault it repeats or contradicts. |
+| Unverified observation card | Result, No verified fault found | At most one per result, shown only when an extra measurement passes its threshold (FR-13); a result can have none. It can sit below a verified fault's sections (after Also checked) or on the no-fault screen. Always "confidence: low", never a drill. It never names a fault in the active rule table. |
 | Inline message | Upload, forms, chat, network errors, frame-rate warning | One line under the control or section it concerns; cleared when the player changes the input or retries. Never a modal, never a banner. |
 | Mock-mode label | Rail footer / menu sheet | Shown on every signed-in page while mock mode is on `[ASSUMPTION]`. Not interactive. |
 
@@ -143,7 +144,7 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Component | Use | Behavioural rules |
 |---|---|---|
 | Text input | Sign in, create account | Label above; errors appear under the field on submit, not while typing. |
-| Consent checkbox | Create account | Required, unticked by default, never pre-ticked. The label is the full consent text and toggles the box. "Create account" stays disabled until the box is ticked; unticking disables it again. The consent is recorded with the account. It is the only consent in the app (PRD §6.1 explicit consent). |
+| Consent checkbox | Create account | Required, unticked by default, never pre-ticked. The label is the full consent text and toggles the box. "Create account" stays disabled until the box is ticked; unticking disables it again. The acknowledgement is recorded with the account. It is not GDPR consent: storing clips is part of the service (PRD §6.1, legal basis contract). It is the only such checkbox in the app. |
 | List row | Filming guide, swing library, account | The whole row is the target; a chevron means it navigates; a trash icon deletes (with a confirm sheet). |
 | Rail swing row | Rail | Opens that thread. The active thread is highlighted. |
 | Clip detail | Swing library | Native video controls, no autoplay. "Open analysis" opens the thread. "Delete clip" opens a confirm sheet (see State Patterns → Deleting a clip). |
@@ -164,8 +165,9 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Ready to send (phone) | New swing | Clip preview with first-frame skeleton, file name, "3.8 s of 15 s · 120 fps", coach line "Looks right. Send it when you're ready.", the library note, "Send to the coach", "Choose a different clip". |
 | Uploading | New swing | `[ASSUMPTION]` the player's clip bubble shows upload progress; the step log starts when the upload completes. |
 | Analysing | Thread | Clip bubble, then "Got it — a clean down-the-line clip at 120 fps. Watching now." The step log fills in order with "n of 5" and the typing indicator "Coach is watching your swing…". Evidence pins fill live ("2 pins so far", "drawing lines…", "measuring…"). Composer disabled. Expected duration per NFR-1 (under 2 min for 10 s). |
-| Analysis takes too long or fails | Thread | `[ASSUMPTION]` after 3 min, a coach line "This is taking longer than it should." with "Try again". A system failure is never shown as a rejection or a result. |
-| Storage limit reached | New swing | `[ASSUMPTION]` drop zone disabled with "Your swing library is full (50). Delete a clip before sending a new one." (limit from the FR-19 assumption; Open Question 2). |
+| Analysis takes too long | Thread | `[ASSUMPTION]` after 3 min (NFR-1's limit for a 15 s clip) the typing indicator stays and a coach line appears: "This is taking longer than it should. I'm still watching." The step log keeps its place. No action is offered until it ends. |
+| Analysis fails (crash or error) | Thread | `[ASSUMPTION]` the step log row that was running shows "stopped"; coach line: "Something went wrong on my side, not with your clip. Nothing was analysed." with "Try again" (re-runs the same clip) and "New swing". The clip stays in the swing library with the row "Not analysed". A system failure is never shown as a rejection or a result, and never lists filming reasons. |
+| Storage limit reached | New swing | Drop zone disabled with "Your swing library is full (50 clips). Delete a clip before sending a new one." and a link to the swing library (FR-5, FR-19). "Clip deleted" rows do not count. `[ASSUMPTION]` copy. |
 
 ### Outcomes
 
@@ -177,9 +179,12 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Frame-rate warning (30–119 fps) | Analysing, result | The clip is analysed. Inline warning in the thread and in clip checks: "Filmed at 60 fps — nothing can be rated 'high'." (FR-8). `[ASSUMPTION]` copy. Under 30 fps the clip is rejected instead. |
 | Possible fault | Also checked | "possible" chip, measurement, band, pin, "No drill." Never in the verdict card, never counted as a fault. |
 | Several verified faults | Result | `[ASSUMPTION]` one verdict card, chain and exercise card per fault, ordered by confidence; jump chips gain one entry per fault. Not mocked. |
-| No verified fault found | Thread | Coach: "No verified fault found" + one line; "Checked: early extension · loss of posture · over the top"; one unverified observation card; "Ask the coach about this". No exercise card, no fault chain (FR-12, FR-13). |
+| No verified fault found, with observation | Thread | Coach: "No verified fault found" + one line; "Checked: early extension · loss of posture · over the top" (possible faults labelled "possible"); one unverified observation card; "Ask the coach about this". No exercise card, no fault chain (FR-12, FR-13). |
+| No verified fault found, no observation | Thread | Same as above without the observation card. Coach line: "None of my three rules fired, and nothing else stood out that I can measure. That's a real answer." Suggested prompt: "What did you check in my swing?". `[ASSUMPTION]` copy. Not mocked. |
+| Verified fault with an observation | Result | The observation card sits after Also checked, never inside the verdict, chain or practice sections. Not mocked. |
 | Rejection | Thread | Step log stopped; "Cannot analyse", "I won't guess from this clip. n things got in the way:", one row per reason with its guide-step link, primary "Film again", footer "No result was made. The clip is in your swing library; delete it there if you don't need it." No faults, no composer (FR-8). |
 | LLM unavailable | Result | The result renders in full with the template explanation (FR-14); no error on the result itself. Composer disabled with "The coach can't answer questions right now. Your result is complete." Grounding note stays. `[ASSUMPTION]` copy. |
+| Chat cut from the build | Result | If FR-20 is cut at a checkpoint (PRD §8.1): no composer, suggested prompts, grounding note, "Ask the coach" chip or "Ask the coach about this" link. Everything else is unchanged. |
 | Mock mode | Whole app | Works end to end (FR-15). Mock-mode label in the rail footer `[ASSUMPTION]`; chat gives fixed sample answers. |
 
 ### Library, account and access
@@ -191,11 +196,12 @@ Behaviour only. Visual specs are in `DESIGN.md` → Components under the same na
 | Email in use | Create account | "An account with this email already exists. Sign in instead?" (FR-1). The consent box keeps its state. |
 | Sign-in error | Sign in | "That email and password don't match." under the form. |
 | Empty swing library | Swing library | "No swings yet. Every clip you send lands here." + "New swing". `[ASSUMPTION]` copy. |
+| Clip deleted, analysis kept | Swing library | The row stays: dashed thumbnail, "date · main finding", meta "clip deleted"; no play control. Opening it opens the analysis; its trash icon deletes the analysis (confirm sheet as Deleting an analysis). Not counted toward the 50 (FR-19). |
 | Account with no analyses | Account | "No analyses yet." under "Your analyses"; sign out and delete account still shown. `[ASSUMPTION]` copy. |
 | Empty rail (first visit) | Rail | No "Swings" heading; "New swing" is the only action. |
-| Library and account rows | Swing library, account | Library row: thumbnail (dashed tile for a rejection), "date · club", main finding or "Cannot analyse"; a clip whose analysis was deleted reads "Analysis deleted" `[ASSUMPTION]`. Account row: "date · main finding" and a meta line "clip in swing library" or "clip deleted" `[ASSUMPTION]`. |
-| Deleting an analysis | Account | `[ASSUMPTION]` confirm sheet: "Delete this analysis? Its result and key frames are removed. The swing clip stays in your swing library." On success the row disappears (FR-3). |
-| Deleting a clip | Clip detail, swing library | `[ASSUMPTION]` confirm sheet: "Delete this clip?" with "Delete clip, keep analysis" and "Delete clip and analysis" (FR-19 assumption: the player chooses). The row leaves the library. |
+| Library and account rows | Swing library, account | Library row: thumbnail (dashed tile for a rejection), date, main finding or "Cannot analyse"; a clip whose analysis was deleted reads "Analysis deleted" `[ASSUMPTION]`. Account row: "date · main finding" and a meta line "clip in swing library" or "clip deleted" `[ASSUMPTION]`. |
+| Deleting an analysis | Account, "clip deleted" row | Confirm sheet (FR-3): "Delete this analysis? Its result and key frames are removed. The swing clip stays in your swing library." On success the row disappears (FR-3). |
+| Deleting a clip | Clip detail, swing library | Confirm sheet (FR-19): "Delete this clip?" with "Delete clip, keep analysis" and "Delete clip and analysis". Keeping the analysis turns the row into a "clip deleted" row; deleting both removes the row. |
 | Delete failed | Account, library | "Couldn't delete. Nothing was removed. Try again." inline or in the open sheet. |
 | Playback fails | Clip detail | `[ASSUMPTION]` "This clip can't play in this browser." The analysis can still be opened. |
 | Not found / not yours | Any thread or clip URL | "This analysis doesn't exist or isn't yours." + a link to your swings (FR-2). |
@@ -231,16 +237,16 @@ Behaviour only; contrast is in `DESIGN.md` → Colors.
 
 ## AI Coach Chat
 
-**Status: in the MVP (decided 2026-11-24).** This overrides the PRD, which still lists chat as a non-goal (§7) and next phase (§8.2, §9). The PRD needs an Update with a new FR for grounded chat before stories are written. This section is the UX contract for it.
+**Status: in the MVP (decided 2026-11-24), PRD FR-20 (2026-11-25).** Build tier P2; if it is cut, see State Patterns → Chat cut from the build. This section is the UX contract for FR-20.
 
-**Scope = one analysis.** Each thread's chat sees only that analysis: its measurements, confidence bands, key frames as references, the rule-table outcome (verified, possible, not found), the cause, drill, mobility exercise, the unverified observation and the explanation. It does not see other swings, the swing clip, the player's email or anything outside the analysis (PRD §6.1). Chat appears only on results (verified fault or no verified fault found), never on a rejection `[ASSUMPTION]`.
+**Scope = one analysis.** Each thread's chat sees only that analysis: its measurements, confidence bands, key frame labels (which frame shows what; never the images, PRD §6.1), the rule-table outcome (verified, possible, not found), the cause, drill, mobility exercise, the unverified observation and the explanation. It does not see other swings, the swing clip, the player's email or anything outside the analysis (PRD §6.1). Chat appears only on results (verified fault or no verified fault found), never on a rejection (FR-20).
 
 **Grounding rules (FR-14 applied to chat).**
 - Mentions only faults, causes, drills and mobility exercises present in this analysis; no new ones.
 - Uses only numbers present in the analysis; every number is cited with its pin.
 - Never upgrades confidence: a medium or low band is restated as such; a possible fault stays "possible"; an unverified observation stays "Unverified — confirm with a coach".
 - Never prescribes a drill or mobility exercise for a possible fault or an unverified observation.
-- Same plain language and jargon blocklist as the explanation. `[ASSUMPTION]` answers of two to four sentences, at most about 80 words.
+- Same plain language and jargon blocklist as the explanation. Answers of two to four sentences, at most 80 words (FR-20).
 - Every answer ends with a "Based on:" footnote listing what it used.
 - The language model explains; it never decides. The rule table remains the only source of verdicts.
 
@@ -249,7 +255,7 @@ Behaviour only; contrast is in `DESIGN.md` → Colors.
 | Question type | Answer |
 |---|---|
 | Not measured ("Is my grip causing this?") | "I didn't measure your grip in this clip, so I can't tell you." + the current drill or "ask a coach" |
-| Outside the rule table / unverified ("Give me a drill for the weight shift") | "I have no drill I can stand behind. A coach can check it in person." |
+| Outside the rule table / unverified ("Give me a drill for the hip movement") | "I have no drill I can stand behind. A coach can check it in person." |
 | Other swings or progress ("Is this better than last week?") | "I can only see this swing." + a pointer to the swing library `[ASSUMPTION]` |
 | Pain or injury | No advice beyond the medical notice: "see a physiotherapist if you feel pain" (PRD §6.2, §7) |
 | Use during a competitive round | `[ASSUMPTION]` "AIcoach is a practice tool, not for use during a round." (PRD §2.2) |
@@ -308,9 +314,9 @@ Edge: hips only partly visible at impact → same fault, "confidence: low" every
 
 1. Nelly sends a 6-iron clip; analysis runs as in Flow 1.
 2. **Climax:** "No verified fault found. None of my three rules fired. That's a real answer, so I won't invent a drill." Below: "Checked: early extension · loss of posture · over the top".
-3. A dashed card: "Unverified — confirm with a coach. Weight appears to move toward the trail side at the top. confidence: low. No drill: this is not in my rule table."
-4. She taps "Ask the coach about this" and asks "Can you give me a drill for the weight shift?"
-5. The coach refuses: "I can't. The weight shift is unverified and outside my rule table, so I have no drill I can stand behind. A coach can check it in person." Based on: unverified observation (confidence: low) · rule table.
+3. Her hips moved away from the target past the sway threshold, so a dashed card appears: "Unverified — confirm with a coach. Your hips appear to move away from the target in the backswing. confidence: low. No drill: this is not in my rule table." (Had no extra measurement passed its threshold, there would be no card.)
+4. She taps "Ask the coach about this" and asks "Can you give me a drill for the hip movement?"
+5. The coach refuses: "I can't. The hip movement is unverified and outside my rule table, so I have no drill I can stand behind. A coach can check it in person." Based on: unverified observation (confidence: low) · rule table.
 
 Failure: the language model is unavailable → the composer is disabled with "The coach can't answer questions right now. Your result is complete."
 
@@ -334,12 +340,12 @@ Failure: deletion fails → the sheet stays open with "Couldn't delete. Nothing 
 ### Flow 6 — UJ-6. Rory keeps his swings to watch his progress (Rory, two weeks later, laptop)
 
 1. Every clip Rory sends lands in his swing library automatically; he agreed to that once, at sign-up (Flow 8).
-2. Two weeks later he opens Swing library: his swings, newest first, each with date and main finding ("11 Nov 2026 · 7-iron · Early extension · high").
+2. Two weeks later he opens Swing library: his swings, newest first, each with date and main finding ("11 Nov 2026 · Early extension · high").
 3. He opens the oldest early-extension row: the clip detail plays the clip with native controls and links "Open analysis".
 4. **Climax:** he opens that analysis, then today's, and compares them; each has its own confidence band. (Stretch FR-17 would show the two side by side `[ASSUMPTION]`.)
-5. He deletes an old, badly filmed clip; the confirm sheet lets him keep or delete its analysis `[ASSUMPTION]`, and the row leaves the library.
+5. He deletes an old, badly filmed clip; the confirm sheet lets him keep or delete its analysis. He chooses "Delete clip and analysis", and the row leaves the library.
 
-### Flow 7 — Rory asks the coach why it feels wrong (MVP; PRD update pending — see AI Coach Chat)
+### Flow 7 — UJ-7. Rory asks the coach why it feels wrong (FR-20)
 
 1. On his result, Rory taps the "Ask the coach" chip; the composer takes focus. The grounding note reads "Answers are based only on this analysis — no new faults, numbers or drills."
 2. He types "Why does it feel like I'm staying down when I'm not?" and sends.
@@ -349,29 +355,25 @@ Failure: deletion fails → the sheet stays open with "Couldn't delete. Nothing 
 
 Failure: the network drops at the range → inline "Can't reach AIcoach. Check you're on the same Wi-Fi as the laptop." with "Try again"; his question stays in the composer. Language model unavailable → composer disabled with the plain line; the result is untouched.
 
-### Flow 8 — Rory creates his account (sign-up and library consent; precedes Flow 1)
+### Flow 8 — Rory creates his account (sign-up and library consent, FR-1; precedes Flow 1)
 
 1. Rory taps "Create account" on the landing page.
 2. He enters his email and a password. "Create account" is disabled; under it: "Tick the box to create your account."
-3. **Climax:** he reads the one consent — "I agree that every swing clip I send is stored in my swing library on the AIcoach server until I delete it." — and ticks it. "Create account" turns clay and active.
+3. **Climax:** he reads the one checkbox — "I understand that every swing clip I send is stored in my swing library on the AIcoach server until I delete it." — and ticks it. "Create account" turns clay and active.
 4. He taps it and lands on New swing, signed in.
 
 Failure: the email is already in use → "An account with this email already exists. Sign in instead?"; his entries and the ticked box stay.
 
 ## Open Questions
 
-Visual questions (dark mode, "possible" chip contrast, font loading, landing on the phone) are in DESIGN.md → Open Questions.
+Visual questions (dark mode, "possible" chip contrast, font loading, landing on the phone) are in DESIGN.md → Open Questions. Resolved by the PRD revision of 2026-11-25 and removed here: the chat FR, swing library and consent, delete coupling, history overlap, and the unverified observation in the MVP.
 
-1. **PRD update for chat.** Chat is in the MVP; the PRD needs the new FR. Open: answer length limit and cost per question outside mock mode.
-2. **PRD update for the swing library and consent.** Automatic library + one sign-up consent reverses FR-18 (opt-in per clip), §3's swing library definition, SM-11 and §6.1 retention. Open: does the 50-clip limit still hold now that every clip, including rejections, counts?
-3. **Delete coupling.** Assumed: deleting an analysis keeps its clip; deleting a clip lets the player keep or delete its analysis. Confirm both, and whether single deletes need a confirm sheet.
-4. **Rejection in the step log.** Assumed: the log stops at the step that found the problem. Architecture should confirm which checks run in which step (fps may be known before Pose).
-5. **Desktop sends on drop.** Assumed: no ready-to-send step on desktop. Confirm.
-6. **History (FR-16) overlap.** The rail's "Swings" list and Account → "See all n analyses" are effectively analysis history, which the PRD marks stretch. Is the rail list P1?
-7. **Unverified observation in the MVP.** The PRD feedback (tilbakemelding §4.1) asks whether it stays, and on what data. The no-fault screen depends on it.
-8. **Several verified faults on one swing.** Not mocked; ordering and layout assumed.
-9. **Clip detail and compare (FR-17)** are not mocked; confirm that spine-only is enough.
-10. **Narrow-laptop breakpoint.** Confirm 1344px for the Evidence drawer, and the 1024 / 768 steps.
-11. **UI language.** NFR-6 says English and the mockups are English; confirm no Norwegian UI is wanted for the course demo.
-12. **Mock-mode label** visible to the examiner: yes or no?
-13. **Copy sign-off.** Low- and medium-confidence wording, the 30–119 fps warning, the consent text and its helper line, and the library note.
+1. **Rejection in the step log.** Assumed: the log stops at the step that found the problem. Architecture should confirm which checks run in which step (fps may be known before Pose).
+2. **Desktop sends on drop.** Assumed: no ready-to-send step on desktop. Confirm.
+3. **Several verified faults on one swing.** Not mocked; ordering and layout assumed.
+4. **Spine-only surfaces.** Clip detail, compare (FR-17), the no-observation and fault-plus-observation states, the "clip deleted" row and the analysis-failed state are not mocked; confirm that spine-only is enough.
+5. **Narrow-laptop breakpoint.** Confirm 1344px for the Evidence drawer, and the 1024 / 768 steps.
+6. **UI language.** NFR-6 says English and the mockups are English; confirm no Norwegian UI is wanted for the course demo.
+7. **Mock-mode label** visible to the examiner: yes or no?
+8. **Copy sign-off.** Low- and medium-confidence wording, the 30–119 fps warning, the checkbox helper line, the library note, the no-observation line and the analysis-failed line.
+9. **Time-out and failure.** The 3-minute "taking longer" line and the failed-analysis "Try again" are assumed; architecture decides whether a failed analysis can be re-run on the stored clip.

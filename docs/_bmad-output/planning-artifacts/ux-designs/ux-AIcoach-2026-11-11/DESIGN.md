@@ -3,7 +3,7 @@ name: AIcoach
 description: A golf coach in the browser that talks in plain language and pins every number it says to measured evidence. Warm paper, a clay coach voice, teal evidence.
 status: final
 created: 2026-11-11
-updated: 2026-11-24
+updated: 2026-11-25
 sources:
   - ../../../../prd/prd.md
   - .memlog.md
@@ -668,13 +668,13 @@ Names match the YAML keys and EXPERIENCE.md → Component Patterns. Sizes and co
 
 **Text input.** Card field with hairline border; label above in `{typography.label-sm}`.
 
-**Consent checkbox.** Sits between the password field and "Create account". A 22px box, unticked by default: card fill, 1.4px ink-2 border (6.1:1 on paper). Ticked: ink fill with a paper check. The label is `{typography.body}` ink, beside the box: "I agree that every swing clip I send is stored in my swing library on the AIcoach server until I delete it." The label is part of the target; the hit area is at least 44 × 44px. Focus shows the focus ring around the box. While unticked, "Create account" is `button-primary-disabled` and a meta line under it reads "Tick the box to create your account." `[ASSUMPTION]` copy.
+**Consent checkbox.** Sits between the password field and "Create account". A 22px box, unticked by default: card fill, 1.4px ink-2 border (6.1:1 on paper). Ticked: ink fill with a paper check. The label is `{typography.body}` ink, beside the box: "I understand that every swing clip I send is stored in my swing library on the AIcoach server until I delete it." The label is part of the target; the hit area is at least 44 × 44px. Focus shows the focus ring around the box. While unticked, "Create account" is `button-primary-disabled` and a meta line under it reads "Tick the box to create your account." `[ASSUMPTION]` copy.
 
 **List row.** Card row with a chevron right; title in `{typography.row-title}`. Library rows add a 46px key-frame thumbnail (or a dashed "no thumbnail" tile for "Cannot analyse") and a meta finding line. Account analysis rows show "date · finding" and a meta clip line, and end in an ink-2 trash icon.
 
 **Rail swing row.** `{rounded.sm}`; the active row on card with a hairline border. 38px key-frame thumbnail, or a dashed paper tile with × for "Cannot analyse"; title "7-iron · today" in `{typography.label}`; finding "Early extension · high" in meta.
 
-**Clip detail.** `[ASSUMPTION]` not mocked. Page header (date · club, meta finding) then the clip in a `{rounded.md}` video frame with native controls on keyframe ground, then "Open analysis" (`button-primary`) and "Delete clip" (`button-secondary`).
+**Clip detail.** `[ASSUMPTION]` not mocked. Page header (date, meta finding; "clip deleted" rows have no clip detail) then the clip in a `{rounded.md}` video frame with native controls on keyframe ground, then "Open analysis" (`button-primary`) and "Delete clip" (`button-secondary`).
 
 **Disclosure rows.** A chevron says it opens in place. Three forms: the "Read my full explanation · 118 words ▾" text row (`{typography.row-title}` + meta count); the Evidence panel's "3 more measurements ›" row (paper 2, `{rounded.sm}`, 66px) and "Clip checks passed · 3 of 3" row (hairline outline, 46px, green check circle, mono count); and the phone's "Next: what to practise · 1 drill · 1 mobility" row (card, hairline, full pill).
 
