@@ -31,8 +31,9 @@
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — avgjør over the top vs sway på tuningsettet innen 2026-12-01 (P1-sjekkpunkt)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ7: velg ekstramåling som erstatter sway etter et eventuelt bytte (tuningsettet)
 - [ ] 2026-11-25 [prd](995-2026-11-03-17-24-03-prd.md) — OQ2: velg språkmodell og kostnad per analyse og per chatspørsmål (arkitektur)
-- [ ] 2026-11-25 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — avklar de 9 gjenstående Open Questions i EXPERIENCE.md (tekstgodkjenning, mock-mode-merke, udesignede tilstander m.m.)
+- [x] 2026-11-25 [ux-designkonsepter](994-2026-11-12-15-16-09-ux-designkonsepter.md) — avklar de 9 gjenstående Open Questions i EXPERIENCE.md (tekstgodkjenning, mock-mode-merke, udesignede tilstander m.m.) (delvis løst 2026-11-25: 2 løst av arkitekturen, 7 igjen, se nytt punkt)
 - [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — kjør bmad-create-epics-and-stories fra PRD + UX + ARCHITECTURE-SPINE.md, i P1/P2/P3-rekkefølge
 - [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — uke 1-spike i tillegg: fps og varighet for iPhone slow-motion-eksport, python:3.14-slim + libegl1/libgles2, arm64-hjul; oppdater AD-15 før opplastingsstoriene hvis slow-motion feiler
-- [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — oppdater UX (EXPERIENCE.md) etter arkitekturen: fps først etter serveravlesning, sletting av under analyse (409), «playback not ready», kun høyrehendte i filmeguide/registrering; legg «kun høyrehendte» i PRD §2.2
+- [x] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — oppdater UX (EXPERIENCE.md) etter arkitekturen: fps først etter serveravlesning, sletting av under analyse (409), «playback not ready», kun høyrehendte i filmeguide/registrering; legg «kun høyrehendte» i PRD §2.2 (løst 2026-11-25)
 - [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — ta backup av EVAL_DATA_DIR (testklippene) utenfor laptopen når de er filmet
+- [ ] 2026-11-25 [arkitektur](993-2026-11-25-14-17-25-arkitektur.md) — avklar de 7 gjenstående Open Questions i EXPERIENCE.md (desktop-send, flere feil, udesignede tilstander, breakpoint, språk, mock-merke, tekstgodkjenning inkl. nye linjer)
