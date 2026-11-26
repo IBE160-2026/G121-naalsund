@@ -1,0 +1,123 @@
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created, ready for development
+#   - in-progress: Developer actively working on implementation
+#   - review: Implementation complete, ready for review
+#   - done: Story completed
+
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+# Action Item Status:
+#   - open: Committed during a retrospective, not yet addressed
+#   - in-progress: Actively being worked on
+#   - done: Completed
+
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when its first story starts (via build's sprint sync)
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates the next story after the previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Retrospective appends its action items to action_items; the status view surfaces open ones
+generated: 11-26-2026 01:40
+last_updated: 11-26-2026 01:40
+project: AIcoach
+project_key: NOKEY
+tracking_system: file-system
+story_location: G121-naalsund/docs/_bmad-output/implementation-artifacts
+development_status:
+  epic-1: backlog
+  1-1-scaffold-aicoach-and-serve-it-on-the-laptop-and-the-phone-wi: backlog
+  1-2-give-the-api-one-contract-a-runtime-config-csrf-protection-a: backlog
+  1-3-make-aicoach-look-like-itself-design-tokens-self-hosted-font: backlog
+  1-4-create-an-account-with-the-library-consent: backlog
+  1-5-sign-in-and-reach-my-protected-pages: backlog
+  1-6-find-my-way-around-the-signed-in-app-shell-my-account-page-a: backlog
+  1-7-land-on-a-page-that-explains-aicoach-honestly-before-i-sign: backlog
+  1-8-delete-my-account: backlog
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-run-the-week-1-spike-and-record-the-pose-backend-decision: backlog
+  2-2-define-the-rule-table-in-rules-yaml-with-one-loader: backlog
+  2-3-film-and-label-the-tuning-and-evaluation-sets: backlog
+  2-4-read-a-clip-and-print-a-versioned-analysisresult-from-the-cl: backlog
+  2-5-estimate-pose-behind-a-port-in-body-relative-units: backlog
+  2-6-find-the-swing-and-detect-address-top-and-impact: backlog
+  2-7-reject-clips-the-engine-cannot-read-honestly: backlog
+  2-8-measure-the-four-faults-with-a-confidence-band-on-each: backlog
+  2-9-decide-verified-possible-and-absent-faults-and-pick-the-obse: backlog
+  2-10-build-the-fault-chain-evidence-ids-key-frames-and-overlays: backlog
+  2-11-score-the-engine-with-eval-and-bench: backlog
+  2-12-tune-thresholds-and-decide-over-the-top-vs-sway-by-2026-12-0: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-read-the-filming-guide-on-a-phone-before-filming: backlog
+  3-2-store-an-uploaded-clip-in-the-swing-library-and-queue-its-an: backlog
+  3-3-run-the-analysis-in-the-background-worker-and-report-progres: backlog
+  3-4-recover-from-stuck-or-crashed-analyses-and-retry-a-failed-on: backlog
+  3-5-watch-the-coach-analyse-my-swing-in-its-thread: backlog
+  3-6-send-a-swing-clip-from-the-new-swing-page-on-desktop-or-phon: backlog
+  3-7-see-the-evidence-panel-drawer-and-tray-fill-in-while-the-swi: backlog
+  3-8-see-the-outcome-in-the-thread-rejection-with-guide-links-or: backlog
+  3-9-try-again-after-an-analysis-fails-on-our-side: backlog
+  epic-3-retrospective: optional
+
+  epic-4: backlog
+  4-1-check-every-coach-text-against-the-analysis: backlog
+  4-2-reach-the-language-model-through-one-gateway-with-mock-mode: backlog
+  4-3-write-the-grounded-explanation-and-observation-when-the-anal: backlog
+  4-4-see-my-key-frames-with-my-body-lines-drawn-on-them: backlog
+  4-5-check-each-measurement-against-its-rule-in-the-evidence-pane: backlog
+  4-6-follow-any-pin-or-citation-to-its-evidence: backlog
+  4-7-read-the-verdict-the-feel-cue-and-the-full-explanation: backlog
+  4-8-see-why-the-fault-happens-and-what-to-practise: backlog
+  4-9-see-what-else-was-checked-the-unverified-observation-and-the: backlog
+  4-10-jump-through-a-long-result-and-see-where-the-coach-chat-will: backlog
+  4-11-read-my-result-on-the-phone-at-the-range-and-on-a-narrow-lap: backlog
+  epic-4-retrospective: optional
+
+  epic-5: backlog
+  5-1-make-every-clip-playable-after-its-analysis: backlog
+  5-2-browse-my-swing-library: backlog
+  5-3-see-my-recent-swings-in-the-rail: backlog
+  5-4-rewatch-a-swing-clip: backlog
+  5-5-delete-a-clip-keeping-or-deleting-its-analysis: backlog
+  5-6-delete-an-analysis-from-my-account-or-library: backlog
+  5-7-delete-my-account-and-every-file-with-it: backlog
+  5-8-prove-my-swings-stay-private-and-are-kept-until-i-delete-the: backlog
+  epic-5-retrospective: optional
+
+  epic-6: backlog
+  6-1-choose-the-coach-model-and-log-the-cost-of-every-call: backlog
+  6-2-ground-chat-answers-and-give-fixed-mock-answers: backlog
+  6-3-answer-with-the-real-model-retry-once-and-refuse-safely: backlog
+  6-4-ask-store-and-reopen-the-chat-through-the-api: backlog
+  6-5-talk-to-the-coach-in-the-result-thread: backlog
+  6-6-see-what-the-answer-rests-on-and-get-suggested-questions: backlog
+  epic-6-retrospective: optional
+
+  epic-7: backlog
+  7-1-browse-my-analysis-history: backlog
+  7-2-compare-two-analyses-side-by-side: backlog
+  7-3-mark-comparisons-whose-confidence-bands-differ: backlog
+  epic-7-retrospective: optional
+
+  epic-8: backlog
+  8-1-bundle-the-author-s-sample-clips: backlog
+  8-2-write-the-readme-so-the-examiner-can-run-aicoach: backlog
+  8-3-automate-the-examiner-path-as-the-one-playwright-smoke-test: backlog
+  8-4-run-the-evaluation-set-and-record-sm-1-to-sm-6: backlog
+  8-5-measure-speed-on-the-target-laptop-and-check-grounding-again: backlog
+  8-6-hand-in-clean-machine-run-and-the-checklist: backlog
+  epic-8-retrospective: optional
