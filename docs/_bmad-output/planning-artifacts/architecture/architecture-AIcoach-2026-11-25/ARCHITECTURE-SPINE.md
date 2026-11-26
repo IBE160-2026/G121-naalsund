@@ -75,6 +75,11 @@ graph TD
     - `identity.service.lock_user(session, user_id)` is the only way to take the per-user lock.
     - `ON DELETE CASCADE` foreign keys, declared in the child table's own migration, are the only way rows are removed across slices.
     - `identity.delete_account` commits, then calls `swings.service.purge_user_files(user_id)`.
+  - **Feature sub-slices and shared folders (added 2026-11-25 with the epics):** each epic is one vertical slice.
+    - `swings` is split into `upload/`, `analysis/`, `library/` and `history/`, and `coach` into `explanation/` and `chat/`. Each sub-slice has its own routes and service. Sub-slices of one slice share that slice's models, `repo.py` and `repo_system.py`, so table ownership above is unchanged.
+    - The frontend has one module per sub-slice (`identity`, `landing`, `guide`, `upload`, `result`, `library`, `account`, `chat`, `history`) and shared folders `src/shared/{ui,layout,api,conversation,evidence}`.
+    - A slice imports only shared folders (`app/core`, the engine, `src/shared/…`) and another slice's public interface (`service.py` / `index.ts`), never its internals. `shared/` never imports a slice; `frontend/src/app/` is the only place that composes slices.
+    - A component needed by a second slice moves to `shared/`. import-linter (backend) and ESLint import-boundary rules (frontend) enforce this in the test suite. Details: `../../epics.md` → Code Organisation.
 
 ### AD-3 — One origin on the local network `[ADOPTED, adapted from technology.md]`
 
@@ -200,7 +205,7 @@ erDiagram
     - `measurements [{key, label, value, unit, display, band, thresholds {potential, fault} with display}]`
     - `faults [{key, label, outcome: verified|possible|absent, band|null, deciding_measurement, chain [{role, label, likely: bool, evidence_ids}], drill, mobility}]`
     - `observation {measurement_key, template_text, text, band: low} | null`
-    - `film_better [{code, guide_step}]` and `reasons [{code, guide_step, label}]`
+    - `film_better [{code, guide_step}]` and `reasons [{code, guide_step, label, detail}]` (`detail` is the one-line explanation per reason, copied from `rules.yaml`; added 2026-11-26)
     - `evidence`, `explanation {text, source}`, `main_finding`, `step_timings`, `rules_hash`, `pose_backend`
   - **Rules for the contents:**
     - Labels and coaching text are copied from `rules.yaml` when the analysis runs. The frontend shows these copies and has no ID-to-label maps of its own.
@@ -220,7 +225,7 @@ erDiagram
 - **Prevents:** pin numbers, explanation citations and chat citations not matching.
 - **Rule:**
   - The engine assigns stable IDs `E1…En`. A pin shows the number in its ID, so reordering never renumbers anything.
-  - The only way to cite inside any text is `[E<n>]`. One regex in `coach/grounding.py` parses it, and `frontend/src/modules/coach/citations.ts` mirrors it, with both tested against a shared fixture.
+  - The only way to cite inside any text is `[E<n>]`. One regex in `coach/grounding.py` parses it, and `frontend/src/shared/evidence/citations.ts` mirrors it, with both tested against a shared fixture.
   - `based_on` is a structured list, never part of the text: `[{type: evidence, id} | {type: fact, key: drill|mobility|observation|rule_table|explanation}]`.
 
 ### AD-11 — The rule table is configuration with one schema and one loader `[ADOPTED from PRD FR-9, FR-13]`
@@ -234,7 +239,7 @@ erDiagram
     - `observations` (the extra measurements and their templates)
     - `confidence` (caps, and the fps floors 30/120)
     - `coach` (the word limits 150/80, the jargon blocklist, the medical notice, refusal texts, template explanations, mock answers)
-    - `guide_steps` (a fixed list of slugs)
+    - `guide_steps` (a fixed list of six slugs: `view`, `position`, `distance`, `frame-rate`, `framing`, `one-swing-light`; the sixth step covers both "one swing per clip" and "good light" from FR-4)
     - `reasons` (each code mapped to a `guide_step`)
   - The schema rejects an extra measurement whose key belongs to an active or possible_only fault (FR-13).
   - Swapping over the top for sway means editing the `status` fields.
@@ -254,7 +259,7 @@ erDiagram
   - **Band:**
     - `confidence.band(measurement, rule, events, visibility, fps)` is the only band function. It combines landmark visibility in the key frames, the margin to the nearest boundary of the outcome's interval, and how clearly the events were detected. It then applies the caps: under 120 fps never `high`, over the top at most `medium`.
     - A fault's band is the band of its deciding measurement.
-    - `absent` faults have no band. An observation is always `low`.
+    - `absent` faults have no band. An observation is always `low`. Where the UI lists an absent fault ("not found" in Also checked), it shows the band of its deciding **measurement**, never a fault band.
   - Code outside the engine only displays bands.
 
 ### AD-13 — Pose estimation, coordinates and joints `[ADOPTED: licence rule from PRD NFR-7]`
@@ -381,7 +386,7 @@ erDiagram
   - **Typed responses:** response models reference the engine's Pydantic models directly. `dict` and `Any` are not allowed in response models.
   - **Generated types:**
     - `uv run python -m app.export_openapi` writes the committed file `frontend/openapi.json`.
-    - `npm run gen:api` generates `src/lib/api/schema.d.ts` from it.
+    - `npm run gen:api` generates `src/shared/api/schema.d.ts` from it.
     - Hand-written domain types fail lint, and a test catches a stale `openapi.json`.
   - **Errors:** errors are always `{"error": {"code", "message"}}`, with codes from one list in `app/core/errors.py`. 422 uses the same envelope.
   - **Media:** media is served from authenticated `/api` endpoints that support Range requests (needed by iOS).
@@ -398,6 +403,7 @@ erDiagram
   - **Routes:** the routes are fixed:
     - Public: `/`, `/signin`, `/signup`, `/guide`, `/guide/[slug]`
     - Signed in: `/swing/new`, `/swing/[analysisId]`, `/library`, `/library/[clipId]`, `/account`
+    - Signed in, P3 behind `FEATURE_HISTORY`: `/history`, `/history/compare`
   - **Guide steps:** their element IDs are the `guide_steps` slugs from `/api/config`, and a test checks that they match.
 
 ### AD-23 — Runtime config, feature flags and mock mode `[ADOPTED: FEATURE_* and mock fallback from technology.md]`
@@ -546,9 +552,12 @@ G121-naalsund/
     app/
       core/                       # settings, db, files (FileStore), auth, csrf, errors
       modules/
-        identity/  swings/  coach/  system/     # routes.py service.py repo.py schemas.py
-        swings/worker.py swings/repo_system.py  # AD-5, AD-7
-        coach/llm.py coach/facts.py coach/grounding.py
+        identity/  system/                      # routes.py service.py repo.py schemas.py
+        swings/                                 # models, repo.py, repo_system.py (AD-7) shared by its sub-slices
+          upload/ analysis/ library/ history/   # each: routes.py service.py schemas.py (AD-2 sub-slices)
+          analysis/worker.py                    # AD-5
+        coach/                                  # llm.py facts.py grounding.py shared by its sub-slices
+          explanation/ chat/
       export_openapi.py
       migrations/                 # Alembic
     models/MANIFEST.yaml          # pose weights: URL, SHA-256, licence (AD-13)
@@ -556,9 +565,9 @@ G121-naalsund/
     pyproject.toml uv.lock Dockerfile
   frontend/
     openapi.json                  # committed, generated (AD-21)
-    src/app/                      # routes per AD-22
-    src/modules/                  # identity, swings, coach, guide
-    src/lib/api/                  # schema.d.ts (generated), fetch client, upload XHR
+    src/app/                      # routes per AD-22; the only place that composes slices
+    src/modules/                  # identity, landing, guide, upload, result, library, account, chat, history
+    src/shared/                   # ui, layout, conversation, evidence; api = schema.d.ts (generated), fetch client, upload XHR
     Dockerfile
   config/rules.yaml               # AD-11
   eval/labels.yaml                # AD-24

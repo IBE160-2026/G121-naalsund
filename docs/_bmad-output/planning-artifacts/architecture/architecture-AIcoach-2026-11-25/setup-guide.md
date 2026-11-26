@@ -53,7 +53,7 @@ No accounts are needed. **OpenRouter** is optional: without a key the app runs i
 
 | Variable | Type | Default | Notes |
 | --- | --- | --- | --- |
-| `APP_ENV` | 🟡 | `local` | `local` (dev) or `demo` (Compose, examiner). Controls seeding of the sample clips. |
+| `APP_ENV` | 🟡 | `local` | `local` (dev) or `demo` (Compose, examiner). `docker-compose.yml` sets `APP_ENV=demo` explicitly for the backend. "Seeding" of the sample clips is a startup check only: it creates no accounts and stores no clips, because no clip may be stored without the library consent (FR-18). |
 | `DATABASE_URL` | 🔴 | `postgresql+asyncpg://aicoach:aicoach@db:5432/aicoach` | In dev on the host, use `localhost:5432`. |
 | `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | 🔴 | `aicoach` / `aicoach` / `aicoach` | Used by the `db` service. The defaults are fine locally because the database port is not exposed to the LAN. |
 | `JWT_SECRET` | 🔴⚪ | empty | If empty, the app generates one on first start and stores it in `DATA_DIR/system/` (AD-20). Never reuse a Pytagoras key. |
@@ -127,7 +127,7 @@ npm i -D openapi-typescript vitest @playwright/test
 cd ..
 ```
 
-**API types (AD-21):** FastAPI uses `openapi_url="/api/openapi.json"` and `docs_url="/api/docs"`. Running `uv run python -m app.export_openapi` writes `frontend/openapi.json`, which is committed. `npm run gen:api` (= `openapi-typescript openapi.json -o src/lib/api/schema.d.ts`) generates the types from it, so no backend has to be running.
+**API types (AD-21):** FastAPI uses `openapi_url="/api/openapi.json"` and `docs_url="/api/docs"`. Running `uv run python -m app.export_openapi` writes `frontend/openapi.json`, which is committed. `npm run gen:api` (= `openapi-typescript openapi.json -o src/shared/api/schema.d.ts`) generates the types from it, so no backend has to be running.
 
 **`next.config.ts`:** set `output: "standalone"`, and in dev `allowedDevOrigins: process.env.DEV_LAN_ORIGIN ? [process.env.DEV_LAN_ORIGIN] : []`.
 
