@@ -40,3 +40,4 @@
 - [ ] 2026-11-26 [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md) — kjør bmad-sprint-planning (readiness-sjekk + sprint-status-fil)
 - [ ] 2026-11-26 [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md) — tidsplanrisiko: P1 er 48 stories (Epic 1–5) mot 2026-12-01; bruk PRD-ens kuttregel i sprint planning
 - [ ] 2026-11-26 [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md) — slett planning-artifacts/.working/stories/ (subagent-utkast, flettet inn i epics.md)
+- [ ] 2026-11-26 [epics-og-stories](992-2026-11-26-00-49-05-epics-og-stories.md) — P1 kritisk sti ~20 stories; vurder å bygge worker (3.3) mot 2.4-stubben så Epic 3–4 går parallelt med motoren
